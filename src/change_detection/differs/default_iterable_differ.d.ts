@@ -26,8 +26,8 @@ export declare class DefaultIterableDiffer implements IterableDiffer {
     private _identityChangesHead;
     private _identityChangesTail;
     constructor(_trackByFn?: TrackByFn);
-    collection: any;
-    length: number;
+    readonly collection: any;
+    readonly length: number;
     forEachItem(fn: Function): void;
     forEachOperation(fn: (item: CollectionChangeRecord, previousIndex: number, currentIndex: number) => void): void;
     forEachPreviousItem(fn: Function): void;
@@ -38,7 +38,7 @@ export declare class DefaultIterableDiffer implements IterableDiffer {
     diff(collection: any): DefaultIterableDiffer;
     onDestroy(): void;
     check(collection: any): boolean;
-    isDirty: boolean;
+    readonly isDirty: boolean;
     toString(): string;
 }
 /**

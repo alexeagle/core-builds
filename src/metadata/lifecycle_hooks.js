@@ -22,7 +22,7 @@ LifecycleHooks[LifecycleHooks.AfterContentInit] = "AfterContentInit";
 LifecycleHooks[LifecycleHooks.AfterContentChecked] = "AfterContentChecked";
 LifecycleHooks[LifecycleHooks.AfterViewInit] = "AfterViewInit";
 LifecycleHooks[LifecycleHooks.AfterViewChecked] = "AfterViewChecked";
-export var /** @type {?} */ LIFECYCLE_HOOKS_VALUES = [
+export const /** @type {?} */ LIFECYCLE_HOOKS_VALUES = [
     LifecycleHooks.OnInit, LifecycleHooks.OnDestroy, LifecycleHooks.DoCheck, LifecycleHooks.OnChanges,
     LifecycleHooks.AfterContentInit, LifecycleHooks.AfterContentChecked, LifecycleHooks.AfterViewInit,
     LifecycleHooks.AfterViewChecked

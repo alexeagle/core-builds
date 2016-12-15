@@ -5,7 +5,6 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { triggerQueuedAnimations } from '../animation/animation_queue';
 import { ChangeDetectorRef } from '../change_detection/change_detector_ref';
 import { ChangeDetectorStatus } from '../change_detection/constants';
 import { unimplemented } from '../facade/errors';
@@ -98,9 +97,11 @@ export class EmbeddedViewRef extends ViewRef {
 export class ViewRef_ {
     /**
      * @param {?} _view
+     * @param {?} animationQueue
      */
-    constructor(_view) {
+    constructor(_view, animationQueue) {
         this._view = _view;
+        this.animationQueue = animationQueue;
         this._view = _view;
         this._originalMode = this._view.cdMode;
     }
@@ -133,7 +134,7 @@ export class ViewRef_ {
      */
     detectChanges() {
         this._view.detectChanges(false);
-        triggerQueuedAnimations();
+        this.animationQueue.flush();
     }
     /**
      * @return {?}
@@ -166,5 +167,7 @@ function ViewRef__tsickle_Closure_declarations() {
     ViewRef_.prototype._originalMode;
     /** @type {?} */
     ViewRef_.prototype._view;
+    /** @type {?} */
+    ViewRef_.prototype.animationQueue;
 }
 //# sourceMappingURL=view_ref.js.map

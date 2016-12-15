@@ -29,16 +29,16 @@ export class AnimationTransition {
      * @return {?}
      */
     onStart(callback) {
-        const /** @type {?} */ event = this._createEvent('start');
-        this._player.onStart(() => callback(event));
+        const /** @type {?} */ fn = (Zone.current.wrap(() => callback(this._createEvent('start')), 'player.onStart'));
+        this._player.onStart(fn);
     }
     /**
      * @param {?} callback
      * @return {?}
      */
     onDone(callback) {
-        const /** @type {?} */ event = this._createEvent('done');
-        this._player.onDone(() => callback(event));
+        const /** @type {?} */ fn = (Zone.current.wrap(() => callback(this._createEvent('done')), 'player.onDone'));
+        this._player.onDone(fn);
     }
 }
 function AnimationTransition_tsickle_Closure_declarations() {

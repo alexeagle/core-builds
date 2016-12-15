@@ -1,3 +1,11 @@
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { AnimationQueue } from '../animation/animation_queue';
 import { ChangeDetectorRef } from '../change_detection/change_detector_ref';
 import { AppView } from './view';
 /**
@@ -8,7 +16,7 @@ export declare abstract class ViewRef extends ChangeDetectorRef {
      * Destroys the view and all of the data structures associated with it.
      */
     abstract destroy(): void;
-    destroyed: boolean;
+    readonly destroyed: boolean;
     abstract onDestroy(callback: Function): any;
 }
 /**
@@ -66,16 +74,17 @@ export declare abstract class ViewRef extends ChangeDetectorRef {
  * @experimental
  */
 export declare abstract class EmbeddedViewRef<C> extends ViewRef {
-    context: C;
-    rootNodes: any[];
+    readonly context: C;
+    readonly rootNodes: any[];
 }
 export declare class ViewRef_<C> implements EmbeddedViewRef<C>, ChangeDetectorRef {
     private _view;
-    constructor(_view: AppView<C>);
-    internalView: AppView<C>;
-    rootNodes: any[];
-    context: C;
-    destroyed: boolean;
+    animationQueue: AnimationQueue;
+    constructor(_view: AppView<C>, animationQueue: AnimationQueue);
+    readonly internalView: AppView<C>;
+    readonly rootNodes: any[];
+    readonly context: C;
+    readonly destroyed: boolean;
     markForCheck(): void;
     detach(): void;
     detectChanges(): void;
