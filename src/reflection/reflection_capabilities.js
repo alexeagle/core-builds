@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { global, isPresent, stringify } from '../facade/lang';
-import { Type } from '../type';
+import { Type, isType } from '../type';
 /**
  * Attention: This regex has to hold even if the code is minified!
  */
@@ -28,6 +28,7 @@ export class ReflectionCapabilities {
      */
     factory(t) { return (...args) => new t(...args); }
     /**
+     * \@internal
      * @param {?} paramTypes
      * @param {?} paramAnnotations
      * @return {?}
@@ -110,7 +111,10 @@ export class ReflectionCapabilities {
     parameters(type) {
         // Note: only report metadata if we have at least one class decorator
         // to stay in sync with the static reflector.
-        const /** @type {?} */ parentCtor = Object.getPrototypeOf(type.prototype).constructor;
+        if (!isType(type)) {
+            return [];
+        }
+        const /** @type {?} */ parentCtor = getParentCtor(type);
         let /** @type {?} */ parameters = this._ownParameters(type, parentCtor);
         if (!parameters && parentCtor !== Object) {
             parameters = this.parameters(parentCtor);
@@ -145,7 +149,10 @@ export class ReflectionCapabilities {
      * @return {?}
      */
     annotations(typeOrFunc) {
-        const /** @type {?} */ parentCtor = Object.getPrototypeOf(typeOrFunc.prototype).constructor;
+        if (!isType(typeOrFunc)) {
+            return [];
+        }
+        const /** @type {?} */ parentCtor = getParentCtor(typeOrFunc);
         const /** @type {?} */ ownAnnotations = this._ownAnnotations(typeOrFunc, parentCtor) || [];
         const /** @type {?} */ parentAnnotations = parentCtor !== Object ? this.annotations(parentCtor) : [];
         return parentAnnotations.concat(ownAnnotations);
@@ -185,7 +192,10 @@ export class ReflectionCapabilities {
      * @return {?}
      */
     propMetadata(typeOrFunc) {
-        const /** @type {?} */ parentCtor = Object.getPrototypeOf(typeOrFunc.prototype).constructor;
+        if (!isType(typeOrFunc)) {
+            return {};
+        }
+        const /** @type {?} */ parentCtor = getParentCtor(typeOrFunc);
         const /** @type {?} */ propMetadata = {};
         if (parentCtor !== Object) {
             const /** @type {?} */ parentPropMetadata = this.propMetadata(parentCtor);
@@ -279,5 +289,16 @@ function convertTsickleDecoratorIntoMetadata(decoratorInvocations) {
         const /** @type {?} */ annotationArgs = decoratorInvocation.args ? decoratorInvocation.args : [];
         return new annotationCls(...annotationArgs);
     });
+}
+/**
+ * @param {?} ctor
+ * @return {?}
+ */
+function getParentCtor(ctor) {
+    const /** @type {?} */ parentProto = Object.getPrototypeOf(ctor.prototype);
+    const /** @type {?} */ parentCtor = parentProto ? parentProto.constructor : null;
+    // Note: We always use `Object` as the null value
+    // to simplify checking later on.
+    return parentCtor || Object;
 }
 //# sourceMappingURL=reflection_capabilities.js.map

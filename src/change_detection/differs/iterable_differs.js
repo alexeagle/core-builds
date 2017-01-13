@@ -9,6 +9,7 @@ import { Optional, SkipSelf } from '../../di';
 import { getTypeNameForDebugging, isPresent } from '../../facade/lang';
 /**
  * A repository of different iterable diffing strategies used by NgFor, NgClass, and others.
+ * \@stable
  */
 export class IterableDiffers {
     /**
@@ -44,6 +45,7 @@ export class IterableDiffers {
      * ### Example
      *
      * ```
+     * \@Component({
      *   viewProviders: [
      *     IterableDiffers.extend([new ImmutableListDiffer()])
      *   ]
@@ -83,7 +85,10 @@ export class IterableDiffers {
     }
 }
 function IterableDiffers_tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * @deprecated v4.0.0 - Should be private
+     * @type {?}
+     */
     IterableDiffers.prototype.factories;
 }
 //# sourceMappingURL=iterable_differs.js.map

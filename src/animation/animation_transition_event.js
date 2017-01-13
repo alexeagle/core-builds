@@ -1,8 +1,10 @@
+import { ElementRef } from '../linker/element_ref';
 /**
  * An instance of this class is returned as an event parameter when an animation
  * callback is captured for an animation either during the start or done phase.
  *
  * ```typescript
+ * \@Component({
  *   host: {
  *     '[\@myAnimationTrigger]': 'someExpression',
  *     '(\@myAnimationTrigger.start)': 'captureStartEvent($event)',
@@ -26,16 +28,19 @@
  * }
  * ```
  *
+ * \@experimental Animation support is experimental.
  */
 export class AnimationTransitionEvent {
     /**
      * @param {?} __0
      */
-    constructor({ fromState, toState, totalTime, phaseName }) {
+    constructor({ fromState, toState, totalTime, phaseName, element, triggerName }) {
         this.fromState = fromState;
         this.toState = toState;
         this.totalTime = totalTime;
         this.phaseName = phaseName;
+        this.element = new ElementRef(element);
+        this.triggerName = triggerName;
     }
 }
 function AnimationTransitionEvent_tsickle_Closure_declarations() {
@@ -47,5 +52,9 @@ function AnimationTransitionEvent_tsickle_Closure_declarations() {
     AnimationTransitionEvent.prototype.totalTime;
     /** @type {?} */
     AnimationTransitionEvent.prototype.phaseName;
+    /** @type {?} */
+    AnimationTransitionEvent.prototype.element;
+    /** @type {?} */
+    AnimationTransitionEvent.prototype.triggerName;
 }
 //# sourceMappingURL=animation_transition_event.js.map

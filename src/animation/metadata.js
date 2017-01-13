@@ -15,6 +15,7 @@ export const /** @type {?} */ AUTO_STYLE = '*';
  * Instances of this class are provided via the animation DSL when the {\@link trigger trigger
  * animation function} is called.
  *
+ * \@experimental Animation support is experimental.
  */
 export class AnimationEntryMetadata {
     /**
@@ -33,6 +34,7 @@ function AnimationEntryMetadata_tsickle_Closure_declarations() {
     AnimationEntryMetadata.prototype.definitions;
 }
 /**
+ * \@experimental Animation support is experimental.
  * @abstract
  */
 export class AnimationStateMetadata {
@@ -42,6 +44,7 @@ export class AnimationStateMetadata {
  * Instances of this class are provided via the animation DSL when the {\@link state state animation
  * function} is called.
  *
+ * \@experimental Animation support is experimental.
  */
 export class AnimationStateDeclarationMetadata extends AnimationStateMetadata {
     /**
@@ -65,6 +68,7 @@ function AnimationStateDeclarationMetadata_tsickle_Closure_declarations() {
  * Instances of this class are provided via the animation DSL when the
  * {\@link transition transition animation function} is called.
  *
+ * \@experimental Animation support is experimental.
  */
 export class AnimationStateTransitionMetadata extends AnimationStateMetadata {
     /**
@@ -84,6 +88,7 @@ function AnimationStateTransitionMetadata_tsickle_Closure_declarations() {
     AnimationStateTransitionMetadata.prototype.steps;
 }
 /**
+ * \@experimental Animation support is experimental.
  * @abstract
  */
 export class AnimationMetadata {
@@ -93,6 +98,7 @@ export class AnimationMetadata {
  * Instances of this class are provided via the animation DSL when the {\@link keyframes keyframes
  * animation function} is called.
  *
+ * \@experimental Animation support is experimental.
  */
 export class AnimationKeyframesSequenceMetadata extends AnimationMetadata {
     /**
@@ -112,6 +118,7 @@ function AnimationKeyframesSequenceMetadata_tsickle_Closure_declarations() {
  * Instances of this class are provided via the animation DSL when the {\@link style style animation
  * function} is called.
  *
+ * \@experimental Animation support is experimental.
  */
 export class AnimationStyleMetadata extends AnimationMetadata {
     /**
@@ -135,6 +142,7 @@ function AnimationStyleMetadata_tsickle_Closure_declarations() {
  * Instances of this class are provided via the animation DSL when the {\@link animate animate
  * animation function} is called.
  *
+ * \@experimental Animation support is experimental.
  */
 export class AnimationAnimateMetadata extends AnimationMetadata {
     /**
@@ -154,6 +162,7 @@ function AnimationAnimateMetadata_tsickle_Closure_declarations() {
     AnimationAnimateMetadata.prototype.styles;
 }
 /**
+ * \@experimental Animation support is experimental.
  * @abstract
  */
 export class AnimationWithStepsMetadata extends AnimationMetadata {
@@ -170,6 +179,7 @@ export class AnimationWithStepsMetadata extends AnimationMetadata {
  * Instances of this class are provided via the animation DSL when the {\@link sequence sequence
  * animation function} is called.
  *
+ * \@experimental Animation support is experimental.
  */
 export class AnimationSequenceMetadata extends AnimationWithStepsMetadata {
     /**
@@ -193,6 +203,7 @@ function AnimationSequenceMetadata_tsickle_Closure_declarations() {
  * Instances of this class are provided via the animation DSL when the {\@link group group animation
  * function} is called.
  *
+ * \@experimental Animation support is experimental.
  */
 export class AnimationGroupMetadata extends AnimationWithStepsMetadata {
     /**
@@ -261,6 +272,7 @@ function AnimationGroupMetadata_tsickle_Closure_declarations() {
  *
  * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
  *
+ * \@experimental Animation support is experimental.
  * @param {?} timing
  * @param {?=} styles
  * @return {?}
@@ -309,6 +321,7 @@ export function animate(timing, styles = null) {
  *
  * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
  *
+ * \@experimental Animation support is experimental.
  * @param {?} steps
  * @return {?}
  */
@@ -352,6 +365,7 @@ export function group(steps) {
  *
  * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
  *
+ * \@experimental Animation support is experimental.
  * @param {?} steps
  * @return {?}
  */
@@ -403,6 +417,7 @@ export function sequence(steps) {
  *
  * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
  *
+ * \@experimental Animation support is experimental.
  * @param {?} tokens
  * @return {?}
  */
@@ -480,6 +495,7 @@ export function style(tokens) {
  *
  * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
  *
+ * \@experimental Animation support is experimental.
  * @param {?} stateNameExpr
  * @param {?} styles
  * @return {?}
@@ -534,6 +550,7 @@ export function state(stateNameExpr, styles) {
  *
  * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
  *
+ * \@experimental Animation support is experimental.
  * @param {?} steps
  * @return {?}
  */
@@ -552,6 +569,10 @@ export function keyframes(steps) {
  * `stateChangeExpr` value is satisfied. The `stateChangeExpr` consists of a `state1 => state2`
  * which consists
  * of two known states (use an asterix (`*`) to refer to a dynamic starting and/or ending state).
+ *
+ * A function can also be provided as the `stateChangeExpr` argument for a transition and this
+ * function will be executed each time a state change occurs. If the value returned within the
+ * function is true then the associated animation will be run.
  *
  * Animation transitions are placed within an {\@link trigger animation trigger}. For an transition
  * to animate to
@@ -593,6 +614,12 @@ export function keyframes(steps) {
  *
  *   // this will capture a state change between any states
  *   transition("* => *", animate("1s 0s")),
+ *
+ *   // you can also go full out and include a function
+ *   transition((fromState, toState) => {
+ *     // when `true` then it will allow the animation below to be invoked
+ *     return fromState == "off" && toState == "on";
+ *   }, animate("1s 0s"))
  * ])
  * ```
  *
@@ -642,6 +669,7 @@ export function keyframes(steps) {
  *
  * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
  *
+ * \@experimental Animation support is experimental.
  * @param {?} stateChangeExpr
  * @param {?} steps
  * @return {?}
@@ -675,6 +703,7 @@ export function transition(stateChangeExpr, steps) {
  * declarations.
  *
  * ```typescript
+ * \@Component({
  *   selector: 'my-component',
  *   templateUrl: 'my-component-tpl.html',
  *   animations: [
@@ -703,6 +732,7 @@ export function transition(stateChangeExpr, steps) {
  *
  * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
  *
+ * \@experimental Animation support is experimental.
  * @param {?} name
  * @param {?} animation
  * @return {?}

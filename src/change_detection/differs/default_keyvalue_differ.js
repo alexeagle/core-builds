@@ -18,7 +18,9 @@ export class DefaultKeyValueDifferFactory {
      * @param {?} cdRef
      * @return {?}
      */
-    create(cdRef) { return new DefaultKeyValueDiffer(); }
+    create(cdRef) {
+        return new DefaultKeyValueDiffer();
+    }
 }
 export class DefaultKeyValueDiffer {
     constructor() {
@@ -134,7 +136,7 @@ export class DefaultKeyValueDiffer {
                     this._maybeAddToChanges(newSeqRecord, value);
                 }
                 else {
-                    newSeqRecord = new KeyValueChangeRecord(key);
+                    newSeqRecord = new KeyValueChangeRecord_(key);
                     records.set(key, newSeqRecord);
                     newSeqRecord.currentValue = value;
                     this._addToAdditions(newSeqRecord);
@@ -159,6 +161,7 @@ export class DefaultKeyValueDiffer {
         return this.isDirty;
     }
     /**
+     * \@internal
      * @return {?}
      */
     _reset() {
@@ -331,6 +334,7 @@ export class DefaultKeyValueDiffer {
             'removals: ' + removals.join(', ') + '\n';
     }
     /**
+     * \@internal
      * @param {?} obj
      * @param {?} fn
      * @return {?}
@@ -364,7 +368,10 @@ function DefaultKeyValueDiffer_tsickle_Closure_declarations() {
     /** @type {?} */
     DefaultKeyValueDiffer.prototype._removalsTail;
 }
-export class KeyValueChangeRecord {
+/**
+ * \@stable
+ */
+class KeyValueChangeRecord_ {
     /**
      * @param {?} key
      */
@@ -395,24 +402,42 @@ export class KeyValueChangeRecord {
                 stringify(this.currentValue) + ']');
     }
 }
-function KeyValueChangeRecord_tsickle_Closure_declarations() {
+function KeyValueChangeRecord__tsickle_Closure_declarations() {
     /** @type {?} */
-    KeyValueChangeRecord.prototype.previousValue;
+    KeyValueChangeRecord_.prototype.previousValue;
     /** @type {?} */
-    KeyValueChangeRecord.prototype.currentValue;
+    KeyValueChangeRecord_.prototype.currentValue;
+    /**
+     * \@internal
+     * @type {?}
+     */
+    KeyValueChangeRecord_.prototype._nextPrevious;
+    /**
+     * \@internal
+     * @type {?}
+     */
+    KeyValueChangeRecord_.prototype._next;
+    /**
+     * \@internal
+     * @type {?}
+     */
+    KeyValueChangeRecord_.prototype._nextAdded;
+    /**
+     * \@internal
+     * @type {?}
+     */
+    KeyValueChangeRecord_.prototype._nextRemoved;
+    /**
+     * \@internal
+     * @type {?}
+     */
+    KeyValueChangeRecord_.prototype._prevRemoved;
+    /**
+     * \@internal
+     * @type {?}
+     */
+    KeyValueChangeRecord_.prototype._nextChanged;
     /** @type {?} */
-    KeyValueChangeRecord.prototype._nextPrevious;
-    /** @type {?} */
-    KeyValueChangeRecord.prototype._next;
-    /** @type {?} */
-    KeyValueChangeRecord.prototype._nextAdded;
-    /** @type {?} */
-    KeyValueChangeRecord.prototype._nextRemoved;
-    /** @type {?} */
-    KeyValueChangeRecord.prototype._prevRemoved;
-    /** @type {?} */
-    KeyValueChangeRecord.prototype._nextChanged;
-    /** @type {?} */
-    KeyValueChangeRecord.prototype.key;
+    KeyValueChangeRecord_.prototype.key;
 }
 //# sourceMappingURL=default_keyvalue_differ.js.map

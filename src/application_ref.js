@@ -31,6 +31,7 @@ let /** @type {?} */ _platform;
  * does not result in additional changes to any bindings (also known as
  * unidirectional data flow).
  *
+ * \@stable
  * @return {?}
  */
 export function enableProdMode() {
@@ -45,6 +46,7 @@ export function enableProdMode() {
  *
  * By default, this is true, unless a user calls `enableProdMode` before calling this.
  *
+ * \@experimental APIs related to application bootstrap are currently under review.
  * @return {?}
  */
 export function isDevMode() {
@@ -54,6 +56,7 @@ export function isDevMode() {
 /**
  * A token for third-party components that can register themselves with NgProbe.
  *
+ * \@experimental
  */
 export class NgProbeToken {
     /**
@@ -75,6 +78,7 @@ function NgProbeToken_tsickle_Closure_declarations() {
  * Creates a platform.
  * Platforms have to be eagerly created via this function.
  *
+ * \@experimental APIs related to application bootstrap are currently under review.
  * @param {?} injector
  * @return {?}
  */
@@ -91,17 +95,18 @@ export function createPlatform(injector) {
 /**
  * Creates a factory for a platform
  *
- * @param {?} parentPlaformFactory
+ * \@experimental APIs related to application bootstrap are currently under review.
+ * @param {?} parentPlatformFactory
  * @param {?} name
  * @param {?=} providers
  * @return {?}
  */
-export function createPlatformFactory(parentPlaformFactory, name, providers = []) {
+export function createPlatformFactory(parentPlatformFactory, name, providers = []) {
     const /** @type {?} */ marker = new OpaqueToken(`Platform: ${name}`);
     return (extraProviders = []) => {
         if (!getPlatform()) {
-            if (parentPlaformFactory) {
-                parentPlaformFactory(providers.concat(extraProviders).concat({ provide: marker, useValue: true }));
+            if (parentPlatformFactory) {
+                parentPlatformFactory(providers.concat(extraProviders).concat({ provide: marker, useValue: true }));
             }
             else {
                 createPlatform(ReflectiveInjector.resolveAndCreate(providers.concat(extraProviders).concat({ provide: marker, useValue: true })));
@@ -114,6 +119,7 @@ export function createPlatformFactory(parentPlaformFactory, name, providers = []
  * Checks that there currently is a platform
  * which contains the given token as a provider.
  *
+ * \@experimental APIs related to application bootstrap are currently under review.
  * @param {?} requiredToken
  * @return {?}
  */
@@ -130,6 +136,7 @@ export function assertPlatform(requiredToken) {
 /**
  * Destroy the existing platform.
  *
+ * \@experimental APIs related to application bootstrap are currently under review.
  * @return {?}
  */
 export function destroyPlatform() {
@@ -140,6 +147,7 @@ export function destroyPlatform() {
 /**
  * Returns the current platform.
  *
+ * \@experimental APIs related to application bootstrap are currently under review.
  * @return {?}
  */
 export function getPlatform() {
@@ -153,6 +161,7 @@ export function getPlatform() {
  * A page's platform is initialized implicitly when {\@link bootstrap}() is called, or
  * explicitly by calling {\@link createPlatform}().
  *
+ * \@stable
  * @abstract
  */
 export class PlatformRef {
@@ -165,6 +174,7 @@ export class PlatformRef {
      * ```typescript
      * my_module.ts:
      *
+     * \@NgModule({
      *   imports: [BrowserModule]
      * })
      * class MyModule {}
@@ -176,6 +186,7 @@ export class PlatformRef {
      * let moduleRef = platformBrowser().bootstrapModuleFactory(MyModuleNgFactory);
      * ```
      *
+     * \@experimental APIs related to application bootstrap are currently under review.
      * @param {?} moduleFactory
      * @return {?}
      */
@@ -188,12 +199,14 @@ export class PlatformRef {
      * ## Simple Example
      *
      * ```typescript
+     * \@NgModule({
      *   imports: [BrowserModule]
      * })
      * class MyModule {}
      *
      * let moduleRef = platformBrowser().bootstrapModule(MyModule);
      * ```
+     * \@stable
      * @param {?} moduleType
      * @param {?=} compilerOptions
      * @return {?}
@@ -401,6 +414,7 @@ function PlatformRef__tsickle_Closure_declarations() {
  *
  * For more about Angular applications, see the documentation for {\@link bootstrap}.
  *
+ * \@stable
  * @abstract
  */
 export class ApplicationRef {
@@ -539,7 +553,7 @@ export class ApplicationRef_ extends ApplicationRef {
         }
         this._loadComponent(compRef);
         if (isDevMode()) {
-            this._console.log(`Angular 2 is running in the development mode. Call enableProdMode() to enable the production mode.`);
+            this._console.log(`Angular is running in the development mode. Call enableProdMode() to enable the production mode.`);
         }
         return compRef;
     }
@@ -621,7 +635,10 @@ ApplicationRef_.ctorParameters = () => [
     { type: Testability, decorators: [{ type: Optional },] },
 ];
 function ApplicationRef__tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ApplicationRef_._tickScope;
     /** @type {?} */
     ApplicationRef_.decorators;

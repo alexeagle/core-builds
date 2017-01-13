@@ -25,6 +25,9 @@ export class DefaultIterableDifferFactory {
     }
 }
 const /** @type {?} */ trackByIdentity = (index, item) => item;
+/**
+ * @deprecated v4.0.0 - Should not be part of public API.
+ */
 export class DefaultIterableDiffer {
     /**
      * @param {?=} _trackByFn
@@ -173,7 +176,7 @@ export class DefaultIterableDiffer {
      * @param {?} collection
      * @return {?}
      */
-    diff(collection) {
+    diff(collection /* |Iterable<V> */) {
         if (isBlank(collection))
             collection = [];
         if (!isListLikeIterable(collection)) {
@@ -194,7 +197,7 @@ export class DefaultIterableDiffer {
      * @param {?} collection
      * @return {?}
      */
-    check(collection) {
+    check(collection /* |Iterable<V> */) {
         this._reset();
         let /** @type {?} */ record = this._itHead;
         let /** @type {?} */ mayBeDirty = false;
@@ -202,8 +205,8 @@ export class DefaultIterableDiffer {
         let /** @type {?} */ item;
         let /** @type {?} */ itemTrackBy;
         if (Array.isArray(collection)) {
-            const /** @type {?} */ list = collection;
-            this._length = collection.length;
+            const /** @type {?} */ list = (collection);
+            this._length = list.length;
             for (let /** @type {?} */ index = 0; index < this._length; index++) {
                 item = list[index];
                 itemTrackBy = this._trackByFn(index, item);
@@ -224,7 +227,7 @@ export class DefaultIterableDiffer {
         }
         else {
             index = 0;
-            iterateListLike(collection, (item /** TODO #9100 */) => {
+            iterateListLike(collection, (item) => {
                 itemTrackBy = this._trackByFn(index, item);
                 if (record === null || !looseIdentical(record.trackById, itemTrackBy)) {
                     record = this._mismatch(record, item, itemTrackBy, index);
@@ -260,6 +263,7 @@ export class DefaultIterableDiffer {
      * Set the previousIndexes of moved and added items to their currentIndexes
      * Reset the list of additions, moves and removals
      *
+     * \@internal
      * @return {?}
      */
     _reset() {
@@ -290,6 +294,7 @@ export class DefaultIterableDiffer {
      * - `item` is the current item in the collection
      * - `index` is the position of the item in the collection
      *
+     * \@internal
      * @param {?} record
      * @param {?} item
      * @param {?} itemTrackBy
@@ -329,7 +334,7 @@ export class DefaultIterableDiffer {
             else {
                 // It is a new item: add it.
                 record =
-                    this._addAfter(new CollectionChangeRecord(item, itemTrackBy), previousRecord, index);
+                    this._addAfter(new IterableChangeRecord_(item, itemTrackBy), previousRecord, index);
             }
         }
         return record;
@@ -359,6 +364,7 @@ export class DefaultIterableDiffer {
      * better way to think of it is as insert of 'b' rather then switch 'a' with 'b' and then add 'a'
      * at the end.
      *
+     * \@internal
      * @param {?} record
      * @param {?} item
      * @param {?} itemTrackBy
@@ -366,7 +372,7 @@ export class DefaultIterableDiffer {
      * @return {?}
      */
     _verifyReinsertion(record, item, itemTrackBy, index) {
-        const /** @type {?} */ reinsertRecord = this._unlinkedRecords === null ? null : this._unlinkedRecords.get(itemTrackBy);
+        let /** @type {?} */ reinsertRecord = this._unlinkedRecords === null ? null : this._unlinkedRecords.get(itemTrackBy);
         if (reinsertRecord !== null) {
             record = this._reinsertAfter(reinsertRecord, record._prev, index);
         }
@@ -377,10 +383,11 @@ export class DefaultIterableDiffer {
         return record;
     }
     /**
-     * Get rid of any excess {\@link CollectionChangeRecord}s from the previous collection
+     * Get rid of any excess {\@link IterableChangeRecord_}s from the previous collection
      *
-     * - `record` The first excess {\@link CollectionChangeRecord}.
+     * - `record` The first excess {\@link IterableChangeRecord_}.
      *
+     * \@internal
      * @param {?} record
      * @return {?}
      */
@@ -411,6 +418,7 @@ export class DefaultIterableDiffer {
         }
     }
     /**
+     * \@internal
      * @param {?} record
      * @param {?} prevRecord
      * @param {?} index
@@ -439,6 +447,7 @@ export class DefaultIterableDiffer {
         return record;
     }
     /**
+     * \@internal
      * @param {?} record
      * @param {?} prevRecord
      * @param {?} index
@@ -451,6 +460,7 @@ export class DefaultIterableDiffer {
         return record;
     }
     /**
+     * \@internal
      * @param {?} record
      * @param {?} prevRecord
      * @param {?} index
@@ -472,6 +482,7 @@ export class DefaultIterableDiffer {
         return record;
     }
     /**
+     * \@internal
      * @param {?} record
      * @param {?} prevRecord
      * @param {?} index
@@ -508,6 +519,7 @@ export class DefaultIterableDiffer {
         return record;
     }
     /**
+     * \@internal
      * @param {?} record
      * @return {?}
      */
@@ -515,6 +527,7 @@ export class DefaultIterableDiffer {
         return this._addToRemovals(this._unlink(record));
     }
     /**
+     * \@internal
      * @param {?} record
      * @return {?}
      */
@@ -542,6 +555,7 @@ export class DefaultIterableDiffer {
         return record;
     }
     /**
+     * \@internal
      * @param {?} record
      * @param {?} toIndex
      * @return {?}
@@ -591,6 +605,7 @@ export class DefaultIterableDiffer {
         return record;
     }
     /**
+     * \@internal
      * @param {?} record
      * @param {?} item
      * @return {?}
@@ -610,17 +625,17 @@ export class DefaultIterableDiffer {
      */
     toString() {
         const /** @type {?} */ list = [];
-        this.forEachItem((record /** TODO #9100 */) => list.push(record));
+        this.forEachItem((record) => list.push(record));
         const /** @type {?} */ previous = [];
-        this.forEachPreviousItem((record /** TODO #9100 */) => previous.push(record));
+        this.forEachPreviousItem((record) => previous.push(record));
         const /** @type {?} */ additions = [];
-        this.forEachAddedItem((record /** TODO #9100 */) => additions.push(record));
+        this.forEachAddedItem((record) => additions.push(record));
         const /** @type {?} */ moves = [];
-        this.forEachMovedItem((record /** TODO #9100 */) => moves.push(record));
+        this.forEachMovedItem((record) => moves.push(record));
         const /** @type {?} */ removals = [];
-        this.forEachRemovedItem((record /** TODO #9100 */) => removals.push(record));
+        this.forEachRemovedItem((record) => removals.push(record));
         const /** @type {?} */ identityChanges = [];
-        this.forEachIdentityChange((record /** TODO #9100 */) => identityChanges.push(record));
+        this.forEachIdentityChange((record) => identityChanges.push(record));
         return 'collection: ' + list.join(', ') + '\n' +
             'previous: ' + previous.join(', ') + '\n' +
             'additions: ' + additions.join(', ') + '\n' +
@@ -663,7 +678,10 @@ function DefaultIterableDiffer_tsickle_Closure_declarations() {
     /** @type {?} */
     DefaultIterableDiffer.prototype._trackByFn;
 }
-export class CollectionChangeRecord {
+/**
+ * \@stable
+ */
+export class IterableChangeRecord_ {
     /**
      * @param {?} item
      * @param {?} trackById
@@ -703,35 +721,65 @@ export class CollectionChangeRecord {
                 stringify(this.previousIndex) + '->' + stringify(this.currentIndex) + ']';
     }
 }
-function CollectionChangeRecord_tsickle_Closure_declarations() {
+function IterableChangeRecord__tsickle_Closure_declarations() {
     /** @type {?} */
-    CollectionChangeRecord.prototype.currentIndex;
+    IterableChangeRecord_.prototype.currentIndex;
     /** @type {?} */
-    CollectionChangeRecord.prototype.previousIndex;
+    IterableChangeRecord_.prototype.previousIndex;
+    /**
+     * \@internal
+     * @type {?}
+     */
+    IterableChangeRecord_.prototype._nextPrevious;
+    /**
+     * \@internal
+     * @type {?}
+     */
+    IterableChangeRecord_.prototype._prev;
+    /**
+     * \@internal
+     * @type {?}
+     */
+    IterableChangeRecord_.prototype._next;
+    /**
+     * \@internal
+     * @type {?}
+     */
+    IterableChangeRecord_.prototype._prevDup;
+    /**
+     * \@internal
+     * @type {?}
+     */
+    IterableChangeRecord_.prototype._nextDup;
+    /**
+     * \@internal
+     * @type {?}
+     */
+    IterableChangeRecord_.prototype._prevRemoved;
+    /**
+     * \@internal
+     * @type {?}
+     */
+    IterableChangeRecord_.prototype._nextRemoved;
+    /**
+     * \@internal
+     * @type {?}
+     */
+    IterableChangeRecord_.prototype._nextAdded;
+    /**
+     * \@internal
+     * @type {?}
+     */
+    IterableChangeRecord_.prototype._nextMoved;
+    /**
+     * \@internal
+     * @type {?}
+     */
+    IterableChangeRecord_.prototype._nextIdentityChange;
     /** @type {?} */
-    CollectionChangeRecord.prototype._nextPrevious;
+    IterableChangeRecord_.prototype.item;
     /** @type {?} */
-    CollectionChangeRecord.prototype._prev;
-    /** @type {?} */
-    CollectionChangeRecord.prototype._next;
-    /** @type {?} */
-    CollectionChangeRecord.prototype._prevDup;
-    /** @type {?} */
-    CollectionChangeRecord.prototype._nextDup;
-    /** @type {?} */
-    CollectionChangeRecord.prototype._prevRemoved;
-    /** @type {?} */
-    CollectionChangeRecord.prototype._nextRemoved;
-    /** @type {?} */
-    CollectionChangeRecord.prototype._nextAdded;
-    /** @type {?} */
-    CollectionChangeRecord.prototype._nextMoved;
-    /** @type {?} */
-    CollectionChangeRecord.prototype._nextIdentityChange;
-    /** @type {?} */
-    CollectionChangeRecord.prototype.item;
-    /** @type {?} */
-    CollectionChangeRecord.prototype.trackById;
+    IterableChangeRecord_.prototype.trackById;
 }
 class _DuplicateItemRecordList {
     constructor() {
@@ -779,7 +827,7 @@ class _DuplicateItemRecordList {
         return null;
     }
     /**
-     * Remove one {\@link CollectionChangeRecord} from the list of duplicates.
+     * Remove one {\@link IterableChangeRecord_} from the list of duplicates.
      *
      * Returns whether the list of duplicates is empty.
      * @param {?} record
@@ -789,7 +837,7 @@ class _DuplicateItemRecordList {
         // todo(vicb)
         // assert(() {
         //  // verify that the record being removed is in the list.
-        //  for (CollectionChangeRecord cursor = _head; cursor != null; cursor = cursor._nextDup) {
+        //  for (IterableChangeRecord_ cursor = _head; cursor != null; cursor = cursor._nextDup) {
         //    if (identical(cursor, record)) return true;
         //  }
         //  return false;
@@ -812,9 +860,15 @@ class _DuplicateItemRecordList {
     }
 }
 function _DuplicateItemRecordList_tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     _DuplicateItemRecordList.prototype._head;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     _DuplicateItemRecordList.prototype._tail;
 }
 class _DuplicateMap {
@@ -835,7 +889,7 @@ class _DuplicateMap {
         duplicates.add(record);
     }
     /**
-     * Retrieve the `value` using key. Because the CollectionChangeRecord value may be one which we
+     * Retrieve the `value` using key. Because the IterableChangeRecord_ value may be one which we
      * have already iterated over, we use the afterIndex to pretend it is not there.
      *
      * Use case: `[a, b, c, a, a]` if we are at index `3` which is the second `a` then asking if we
@@ -850,7 +904,7 @@ class _DuplicateMap {
         return recordList ? recordList.get(trackById, afterIndex) : null;
     }
     /**
-     * Removes a {\@link CollectionChangeRecord} from the list of duplicates.
+     * Removes a {\@link IterableChangeRecord_} from the list of duplicates.
      *
      * The list of duplicates also is removed from the map if it gets empty.
      * @param {?} record

@@ -20,6 +20,7 @@ ViewEncapsulation[ViewEncapsulation.None] = "None";
  * ### Example
  *
  * ```
+ * \@Component({
  *   selector: 'greet',
  *   template: 'Hello {{name}}!',
  * })

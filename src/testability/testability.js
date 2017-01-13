@@ -12,6 +12,7 @@ import { NgZone } from '../zone/ng_zone';
  * The Testability service provides testing hooks that can be accessed from
  * the browser and by services such as Protractor. Each bootstrapped Angular
  * application on the page will have an instance of Testability.
+ * \@experimental
  */
 export class Testability {
     /**
@@ -35,6 +36,7 @@ export class Testability {
         this._watchAngularEvents();
     }
     /**
+     * \@internal
      * @return {?}
      */
     _watchAngularEvents() {
@@ -82,6 +84,7 @@ export class Testability {
         return this._isZoneStable && this._pendingCount == 0 && !this._ngZone.hasPendingMacrotasks;
     }
     /**
+     * \@internal
      * @return {?}
      */
     _runCallbacksIfReady() {
@@ -148,24 +151,35 @@ function Testability_tsickle_Closure_declarations() {
      * @type {?}
      */
     Testability.ctorParameters;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     Testability.prototype._pendingCount;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     Testability.prototype._isZoneStable;
     /**
      * Whether any work was done since the last 'whenStable' callback. This is
      * useful to detect if this could have potentially destabilized another
      * component while it is stabilizing.
+     * \@internal
      * @type {?}
      */
     Testability.prototype._didWork;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     Testability.prototype._callbacks;
     /** @type {?} */
     Testability.prototype._ngZone;
 }
 /**
  * A global registry of {\@link Testability} instances for specific elements.
+ * \@experimental
  */
 export class TestabilityRegistry {
     constructor() {
@@ -216,7 +230,10 @@ function TestabilityRegistry_tsickle_Closure_declarations() {
      * @type {?}
      */
     TestabilityRegistry.ctorParameters;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     TestabilityRegistry.prototype._applications;
 }
 class _NoopGetTestability {
@@ -237,6 +254,7 @@ class _NoopGetTestability {
 }
 /**
  * Set the {\@link GetTestability} implementation used by the Angular testing framework.
+ * \@experimental
  * @param {?} getter
  * @return {?}
  */

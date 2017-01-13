@@ -16,6 +16,7 @@ import { stringify } from '../facade/lang';
  *
  * ### Example
  * {\@example core/di/ts/forward_ref/forward_ref_spec.ts region='forward_ref'}
+ * \@experimental
  * @param {?} forwardRefFn
  * @return {?}
  */
@@ -34,6 +35,7 @@ export function forwardRef(forwardRefFn) {
  * {\@example core/di/ts/forward_ref/forward_ref_spec.ts region='resolve_forward_ref'}
  *
  * See: {\@link forwardRef}
+ * \@experimental
  * @param {?} type
  * @return {?}
  */

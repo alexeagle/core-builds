@@ -665,6 +665,10 @@
             getTestBed().overridePipe(pipe, override);
             return TestBed;
         };
+        TestBed.overrideTemplate = function (component, template) {
+            getTestBed().overrideComponent(component, { set: { template: template, templateUrl: null } });
+            return TestBed;
+        };
         TestBed.get = function (token, notFoundValue) {
             if (notFoundValue === void 0) { notFoundValue = _angular_core.Injector.THROW_IF_NOT_FOUND; }
             return getTestBed().get(token, notFoundValue);
@@ -762,7 +766,7 @@
                 }
                 catch (e) {
                     if (e.compType) {
-                        throw new Error(("This test module uses the component " + stringify(e.compType) + " which is using a \"templateUrl\", but they were never compiled. ") +
+                        throw new Error(("This test module uses the component " + stringify(e.compType) + " which is using a \"templateUrl\" or \"styleUrls\", but they were never compiled. ") +
                             "Please call \"TestBed.compileComponents\" before your test.");
                     }
                     else {

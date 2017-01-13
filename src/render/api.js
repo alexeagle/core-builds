@@ -68,6 +68,7 @@ export class RenderDebugInfo {
     get source() { return unimplemented(); }
 }
 /**
+ * \@experimental
  * @abstract
  */
 export class Renderer {
@@ -230,6 +231,7 @@ export class Renderer {
  * If you are implementing a custom renderer, you must implement this interface.
  *
  * The default Renderer implementation is `DomRenderer`. Also available is `WebWorkerRenderer`.
+ * \@experimental
  * @abstract
  */
 export class RootRenderer {

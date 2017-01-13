@@ -8,9 +8,6 @@
 import { areIterablesEqual, isListLikeIterable } from '../facade/collection';
 import { isPrimitive, looseIdentical } from '../facade/lang';
 export { looseIdentical } from '../facade/lang';
-export const /** @type {?} */ UNINITIALIZED = {
-    toString: () => 'CD_INIT_VALUE'
-};
 /**
  * @param {?} a
  * @param {?} b
@@ -44,6 +41,7 @@ export function devModeEqual(a, b) {
  *    return WrappedValue.wrap(this._latestValue); // this will force update
  *  }
  * ```
+ * \@stable
  */
 export class WrappedValue {
     /**
@@ -91,26 +89,31 @@ function ValueUnwrapper_tsickle_Closure_declarations() {
 }
 /**
  * Represents a basic change from a previous to a new value.
+ * \@stable
  */
 export class SimpleChange {
     /**
      * @param {?} previousValue
      * @param {?} currentValue
+     * @param {?} firstChange
      */
-    constructor(previousValue, currentValue) {
+    constructor(previousValue, currentValue, firstChange) {
         this.previousValue = previousValue;
         this.currentValue = currentValue;
+        this.firstChange = firstChange;
     }
     /**
      * Check whether the new value is the first value assigned.
      * @return {?}
      */
-    isFirstChange() { return this.previousValue === UNINITIALIZED; }
+    isFirstChange() { return this.firstChange; }
 }
 function SimpleChange_tsickle_Closure_declarations() {
     /** @type {?} */
     SimpleChange.prototype.previousValue;
     /** @type {?} */
     SimpleChange.prototype.currentValue;
+    /** @type {?} */
+    SimpleChange.prototype.firstChange;
 }
 //# sourceMappingURL=change_detection_util.js.map

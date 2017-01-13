@@ -7,12 +7,15 @@
  */
 import { BaseError } from '../facade/errors';
 import { stringify } from '../facade/lang';
+/**
+ * \@stable
+ */
 export class NoComponentFactoryError extends BaseError {
     /**
      * @param {?} component
      */
     constructor(component) {
-        super(`No component factory found for ${stringify(component)}`);
+        super(`No component factory found for ${stringify(component)}. Did you add it to @NgModule.entryComponents?`);
         this.component = component;
     }
 }
@@ -30,6 +33,7 @@ class _NullComponentFactoryResolver {
     }
 }
 /**
+ * \@stable
  * @abstract
  */
 export class ComponentFactoryResolver {

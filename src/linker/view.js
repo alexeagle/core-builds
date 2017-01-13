@@ -50,6 +50,7 @@ export class AppView {
         this.cdMode = cdMode;
         this.declaredViewContainer = declaredViewContainer;
         this.numberOfChecks = 0;
+        this.throwOnChange = false;
         this.ref = new ViewRef_(this, viewUtils.animationQueue);
         if (type === ViewType.COMPONENT || type === ViewType.HOST) {
             this.renderer = viewUtils.renderComponent(componentType);
@@ -397,7 +398,8 @@ export class AppView {
         if (this.cdMode === ChangeDetectorStatus.Destroyed) {
             this.throwDestroyedError('detectChanges');
         }
-        this.detectChangesInternal(throwOnChange);
+        this.throwOnChange = throwOnChange;
+        this.detectChangesInternal();
         if (this.cdMode === ChangeDetectorStatus.CheckOnce)
             this.cdMode = ChangeDetectorStatus.Checked;
         this.numberOfChecks++;
@@ -405,10 +407,9 @@ export class AppView {
     }
     /**
      * Overwritten by implementations
-     * @param {?} throwOnChange
      * @return {?}
      */
-    detectChangesInternal(throwOnChange) { }
+    detectChangesInternal() { }
     /**
      * @return {?}
      */
@@ -458,6 +459,8 @@ function AppView_tsickle_Closure_declarations() {
     AppView.prototype.appRef;
     /** @type {?} */
     AppView.prototype.numberOfChecks;
+    /** @type {?} */
+    AppView.prototype.throwOnChange;
     /** @type {?} */
     AppView.prototype.renderer;
     /** @type {?} */

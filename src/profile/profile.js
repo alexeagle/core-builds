@@ -48,7 +48,7 @@ function noopScope(arg0, arg1) {
  *
  * @experimental
  */
-export var /** @type {?} */ wtfCreateScope = wtfEnabled ? createScope : (signature, flags) => noopScope;
+export const /** @type {?} */ wtfCreateScope = wtfEnabled ? createScope : (signature, flags) => noopScope;
 /**
  * Used to mark end of Scope.
  *
@@ -58,7 +58,7 @@ export var /** @type {?} */ wtfCreateScope = wtfEnabled ? createScope : (signatu
  * Returns the `returnValue for easy chaining.
  * @experimental
  */
-export var /** @type {?} */ wtfLeave = wtfEnabled ? leave : (s, r) => r;
+export const /** @type {?} */ wtfLeave = wtfEnabled ? leave : (s, r) => r;
 /**
  * Used to mark Async start. Async are similar to scope but they don't have to be strictly nested.
  * The return value is used in the call to [endAsync]. Async ranges only work if WTF has been
@@ -72,12 +72,12 @@ export var /** @type {?} */ wtfLeave = wtfEnabled ? leave : (s, r) => r;
  *     }
  * @experimental
  */
-export var /** @type {?} */ wtfStartTimeRange = wtfEnabled ? startTimeRange : (rangeType, action) => null;
+export const /** @type {?} */ wtfStartTimeRange = wtfEnabled ? startTimeRange : (rangeType, action) => null;
 /**
  * Ends a async time range operation.
  * [range] is the return value from [wtfStartTimeRange] Async ranges only work if WTF has been
  * enabled.
  * @experimental
  */
-export var /** @type {?} */ wtfEndTimeRange = wtfEnabled ? endTimeRange : (r) => null;
+export const /** @type {?} */ wtfEndTimeRange = wtfEnabled ? endTimeRange : (r) => null;
 //# sourceMappingURL=profile.js.map

@@ -24,6 +24,7 @@ import { wtfCreateScope, wtfLeave } from '../profile/profile';
  *
  * To access a `ViewContainerRef` of an Element, you can either place a {\@link Directive} injected
  * with `ViewContainerRef` on the Element, or you obtain it via a {\@link ViewChild} query.
+ * \@stable
  * @abstract
  */
 export class ViewContainerRef {
@@ -274,13 +275,25 @@ export class ViewContainerRef_ {
     }
 }
 function ViewContainerRef__tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ViewContainerRef_.prototype._createComponentInContainerScope;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ViewContainerRef_.prototype._insertScope;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ViewContainerRef_.prototype._removeScope;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ViewContainerRef_.prototype._detachScope;
     /** @type {?} */
     ViewContainerRef_.prototype._element;

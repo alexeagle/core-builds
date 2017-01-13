@@ -5,12 +5,13 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { OpaqueToken } from '../di';
+import { Injectable, OpaqueToken } from '../di';
 import { BaseError } from '../facade/errors';
 import { stringify } from '../facade/lang';
 /**
  * Indicates that a component is still being loaded in a synchronous compile.
  *
+ * \@stable
  */
 export class ComponentStillLoadingError extends BaseError {
     /**
@@ -28,6 +29,7 @@ function ComponentStillLoadingError_tsickle_Closure_declarations() {
 /**
  * Combination of NgModuleFactory and ComponentFactorys.
  *
+ * \@experimental
  */
 export class ModuleWithComponentFactories {
     /**
@@ -59,6 +61,7 @@ function _throwError() {
  * Each `\@NgModule` provides an own `Compiler` to its injector,
  * that will use the directives/pipes of the ng module for compilation
  * of components.
+ * \@stable
  */
 export class Compiler {
     /**
@@ -112,6 +115,20 @@ export class Compiler {
      */
     clearCacheFor(type) { }
 }
+Compiler.decorators = [
+    { type: Injectable },
+];
+/** @nocollapse */
+Compiler.ctorParameters = () => [];
+function Compiler_tsickle_Closure_declarations() {
+    /** @type {?} */
+    Compiler.decorators;
+    /**
+     * @nocollapse
+     * @type {?}
+     */
+    Compiler.ctorParameters;
+}
 /**
  * Token to provide CompilerOptions in the platform injector.
  *
@@ -121,6 +138,7 @@ export const /** @type {?} */ COMPILER_OPTIONS = new OpaqueToken('compilerOption
 /**
  * A factory for creating a Compiler
  *
+ * \@experimental
  * @abstract
  */
 export class CompilerFactory {

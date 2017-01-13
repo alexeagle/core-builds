@@ -5,7 +5,6 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { UNINITIALIZED } from '../change_detection/change_detection_util';
 import { BaseError, WrappedError } from '../facade/errors';
 /**
  * An error thrown if application changes model breaking the top-down data flow.
@@ -17,6 +16,7 @@ import { BaseError, WrappedError } from '../facade/errors';
  * ### Example
  *
  * ```typescript
+ * \@Component({
  *   selector: 'parent',
  *   template: '<child [prop]="parentProp"></child>',
  * })
@@ -24,6 +24,7 @@ import { BaseError, WrappedError } from '../facade/errors';
  *   parentProp = 'init';
  * }
  *
+ * \@Directive({selector: 'child', inputs: ['prop']})
  * class Child {
  *   constructor(public parent: Parent) {}
  *
@@ -34,15 +35,17 @@ import { BaseError, WrappedError } from '../facade/errors';
  *   }
  * }
  * ```
+ * \@stable
  */
 export class ExpressionChangedAfterItHasBeenCheckedError extends BaseError {
     /**
      * @param {?} oldValue
      * @param {?} currValue
+     * @param {?} isFirstCheck
      */
-    constructor(oldValue, currValue) {
+    constructor(oldValue, currValue, isFirstCheck) {
         let msg = `Expression has changed after it was checked. Previous value: '${oldValue}'. Current value: '${currValue}'.`;
-        if (oldValue === UNINITIALIZED) {
+        if (isFirstCheck) {
             msg +=
                 ` It seems like the view has been created after its parent and its children have been dirty checked.` +
                     ` Has it been created in a change detection hook ?`;
@@ -55,6 +58,7 @@ export class ExpressionChangedAfterItHasBeenCheckedError extends BaseError {
  *
  * This error wraps the original exception to attach additional contextual information that can
  * be useful for debugging.
+ * \@stable
  */
 export class ViewWrappedError extends WrappedError {
     /**
@@ -79,6 +83,7 @@ function ViewWrappedError_tsickle_Closure_declarations() {
  * This error indicates a bug in the framework.
  *
  * This is an internal Angular error.
+ * \@stable
  */
 export class ViewDestroyedError extends BaseError {
     /**

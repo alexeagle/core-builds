@@ -1,5 +1,7 @@
 /**
+ * \@whatItDoes Represents the version of Angular
  *
+ * \@stable
  */
 export class Version {
     /**

@@ -7,6 +7,7 @@
  */
 /**
  * Used to load ng module factories.
+ * \@stable
  * @abstract
  */
 export class NgModuleFactoryLoader {
@@ -20,6 +21,7 @@ export class NgModuleFactoryLoader {
 let /** @type {?} */ moduleFactories = new Map();
 /**
  * Registers a loaded module. Should only be called from generated NgModuleFactory code.
+ * \@experimental
  * @param {?} id
  * @param {?} factory
  * @return {?}
@@ -41,6 +43,7 @@ export function clearModulesForTest() {
  * Returns the NgModuleFactory with the given id, if it exists and has been loaded.
  * Factories for modules that do not specify an `id` cannot be retrieved. Throws if the module
  * cannot be found.
+ * \@experimental
  * @param {?} id
  * @return {?}
  */

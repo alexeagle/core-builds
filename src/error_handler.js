@@ -6,7 +6,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /**
+ * \@whatItDoes Provides a hook for centralized exception handling.
  *
+ * \@description
  *
  * The default implementation of `ErrorHandler` prints error messages to the `console`. To
  * intercept error handling, write a custom exception handler that replaces this default as
@@ -21,11 +23,13 @@
  *   }
  * }
  *
+ * \@NgModule({
  *   providers: [{provide: ErrorHandler, useClass: MyErrorHandler}]
  * })
  * class MyModule {}
  * ```
  *
+ * \@stable
  */
 export class ErrorHandler {
     /**
@@ -64,6 +68,7 @@ export class ErrorHandler {
             throw error;
     }
     /**
+     * \@internal
      * @param {?} error
      * @return {?}
      */
@@ -71,6 +76,7 @@ export class ErrorHandler {
         return error instanceof Error ? error.message : error.toString();
     }
     /**
+     * \@internal
      * @param {?} error
      * @return {?}
      */
@@ -82,6 +88,7 @@ export class ErrorHandler {
         return null;
     }
     /**
+     * \@internal
      * @param {?} error
      * @return {?}
      */
@@ -93,6 +100,7 @@ export class ErrorHandler {
         return e;
     }
     /**
+     * \@internal
      * @param {?} error
      * @return {?}
      */
@@ -111,9 +119,15 @@ export class ErrorHandler {
     }
 }
 function ErrorHandler_tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ErrorHandler.prototype._console;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ErrorHandler.prototype.rethrowError;
 }
 //# sourceMappingURL=error_handler.js.map

@@ -10,6 +10,42 @@
 }(this, function (exports,rxjs_Subject,rxjs_Observable) { 'use strict';
 
     /**
+     * Creates a token that can be used in a DI Provider.
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/Ys9ezXpj2Mnoy3Uc8KBp?p=preview))
+     *
+     * ```typescript
+     * var t = new OpaqueToken("value");
+     *
+     * var injector = Injector.resolveAndCreate([
+     *   {provide: t, useValue: "bindingValue"}
+     * ]);
+     *
+     * expect(injector.get(t)).toEqual("bindingValue");
+     * ```
+     *
+     * Using an `OpaqueToken` is preferable to using strings as tokens because of possible collisions
+     * caused by multiple providers using the same string as two different tokens.
+     *
+     * Using an `OpaqueToken` is preferable to using an `Object` as tokens because it provides better
+     * error messages.
+     * \@stable
+     */
+    var OpaqueToken = (function () {
+        /**
+         * @param {?} _desc
+         */
+        function OpaqueToken(_desc) {
+            this._desc = _desc;
+        }
+        /**
+         * @return {?}
+         */
+        OpaqueToken.prototype.toString = function () { return "Token " + this._desc; };
+        return OpaqueToken;
+    }());
+
+    /**
      * @license
      * Copyright Google Inc. All Rights Reserved.
      *
@@ -286,6 +322,7 @@
      *   }
      * });
      * ```
+     * \@stable
      * @param {?} clsDef
      * @return {?}
      */
@@ -475,70 +512,6 @@
     }
 
     /**
-     * Inject decorator and metadata.
-     *
-     * @stable
-     * @Annotation
-     */
-    var /** @type {?} */ Inject = makeParamDecorator('Inject', [['token', undefined]]);
-    /**
-     * Optional decorator and metadata.
-     *
-     * @stable
-     * @Annotation
-     */
-    var /** @type {?} */ Optional = makeParamDecorator('Optional', []);
-    /**
-     * Injectable decorator and metadata.
-     *
-     * @stable
-     * @Annotation
-     */
-    var /** @type {?} */ Injectable = (makeDecorator('Injectable', []));
-    /**
-     * Self decorator and metadata.
-     *
-     * @stable
-     * @Annotation
-     */
-    var /** @type {?} */ Self = makeParamDecorator('Self', []);
-    /**
-     * SkipSelf decorator and metadata.
-     *
-     * @stable
-     * @Annotation
-     */
-    var /** @type {?} */ SkipSelf = makeParamDecorator('SkipSelf', []);
-    /**
-     * Host decorator and metadata.
-     *
-     * @stable
-     * @Annotation
-     */
-    var /** @type {?} */ Host = makeParamDecorator('Host', []);
-
-    var OpaqueToken = (function () {
-        /**
-         * @param {?} _desc
-         */
-        function OpaqueToken(_desc) {
-            this._desc = _desc;
-        }
-        /**
-         * @return {?}
-         */
-        OpaqueToken.prototype.toString = function () { return "Token " + this._desc; };
-        OpaqueToken.decorators = [
-            { type: Injectable },
-        ];
-        /** @nocollapse */
-        OpaqueToken.ctorParameters = function () { return [
-            null,
-        ]; };
-        return OpaqueToken;
-    }());
-
-    /**
      * This token can be used to create a virtual provider that will populate the
      * `entryComponents` fields of components and ng modules based on its `useValue`.
      * All components that are referenced in the `useValue` value (either directly
@@ -586,6 +559,7 @@
      * See {\@link ContentChildren}, {\@link ContentChild}, {\@link ViewChildren}, {\@link ViewChild} for
      * more information.
      *
+     * \@stable
      * @abstract
      */
     var Query = (function () {
@@ -608,30 +582,7 @@
         }
     ], Query));
     /**
-     * @whatItDoes Configures a content query.
-     *
-     * @howToUse
-     *
-     * {@example core/di/ts/contentChild/content_child_howto.ts region='HowTo'}
-     *
-     * @description
-     *
-     * You can use ContentChild to get the first element or the directive matching the selector from the
-     * content DOM. If the content DOM changes, and a new child matches the selector,
-     * the property will be updated.
-     *
-     * Content queries are set before the `ngAfterContentInit` callback is called.
-     *
-     * **Metadata Properties**:
-     *
-     * * **selector** - the directive type or the name used for querying.
-     * * **read** - read a different token from the queried element.
-     *
-     * Let's look at an example:
-     *
-     * {@example core/di/ts/contentChild/content_child_example.ts region='Component'}
-     *
-     * **npm package**: `@angular/core`
+     * ContentChild decorator and metadata.
      *
      * @stable
      * @Annotation
@@ -645,30 +596,7 @@
         }
     ], Query);
     /**
-     * @whatItDoes Configures a view query.
-     *
-     * @howToUse
-     *
-     * {@example core/di/ts/viewChildren/view_children_howto.ts region='HowTo'}
-     *
-     * @description
-     *
-     * You can use ViewChildren to get the {@link QueryList} of elements or directives from the
-     * view DOM. Any time a child element is added, removed, or moved, the query list will be updated,
-     * and the changes observable of the query list will emit a new value.
-     *
-     * View queries are set before the `ngAfterViewInit` callback is called.
-     *
-     * **Metadata Properties**:
-     *
-     * * **selector** - the directive type or the name used for querying.
-     * * **read** - read a different token from the queried elements.
-     *
-     * Let's look at an example:
-     *
-     * {@example core/di/ts/viewChildren/view_children_example.ts region='Component'}
-     *
-     * **npm package**: `@angular/core`
+     * ViewChildren decorator and metadata.
      *
      * @stable
      * @Annotation
@@ -833,14 +761,18 @@
         LifecycleHooks.AfterViewChecked
     ];
     /**
+     * \@whatItDoes Lifecycle hook that is called when any data-bound property of a directive changes.
+     * \@howToUse
      * {\@example core/ts/metadata/lifecycle_hooks_spec.ts region='OnChanges'}
      *
+     * \@description
      * `ngOnChanges` is called right after the data-bound properties have been checked and before view
      * and content children are checked if at least one of them has changed.
      * The `changes` parameter contains the changed properties.
      *
      * See {\@linkDocs guide/lifecycle-hooks#onchanges "Lifecycle Hooks Guide"}.
      *
+     * \@stable
      * @abstract
      */
     var OnChanges = (function () {
@@ -855,15 +787,19 @@
         return OnChanges;
     }());
     /**
+     * \@whatItDoes Lifecycle hook that is called after data-bound properties of a directive are
      * initialized.
+     * \@howToUse
      * {\@example core/ts/metadata/lifecycle_hooks_spec.ts region='OnInit'}
      *
+     * \@description
      * `ngOnInit` is called right after the directive's data-bound properties have been checked for the
      * first time, and before any of its children have been checked. It is invoked only once when the
      * directive is instantiated.
      *
      * See {\@linkDocs guide/lifecycle-hooks "Lifecycle Hooks Guide"}.
      *
+     * \@stable
      * @abstract
      */
     var OnInit = (function () {
@@ -877,8 +813,11 @@
         return OnInit;
     }());
     /**
+     * \@whatItDoes Lifecycle hook that is called when Angular dirty checks a directive.
+     * \@howToUse
      * {\@example core/ts/metadata/lifecycle_hooks_spec.ts region='DoCheck'}
      *
+     * \@description
      * `ngDoCheck` gets called to check the changes in the directives in addition to the default
      * algorithm. The default change detection algorithm looks for differences by comparing
      * bound-property values by reference across change detection runs.
@@ -892,6 +831,7 @@
      *
      * See {\@linkDocs guide/lifecycle-hooks#docheck "Lifecycle Hooks Guide"}.
      *
+     * \@stable
      * @abstract
      */
     var DoCheck = (function () {
@@ -905,13 +845,17 @@
         return DoCheck;
     }());
     /**
+     * \@whatItDoes Lifecycle hook that is called when a directive, pipe or service is destroyed.
+     * \@howToUse
      * {\@example core/ts/metadata/lifecycle_hooks_spec.ts region='OnDestroy'}
      *
+     * \@description
      * `ngOnDestroy` callback is typically used for any custom cleanup that needs to occur when the
      * instance is destroyed.
      *
      * See {\@linkDocs guide/lifecycle-hooks "Lifecycle Hooks Guide"}.
      *
+     * \@stable
      * @abstract
      */
     var OnDestroy = (function () {
@@ -926,11 +870,15 @@
     }());
     /**
      *
+     * \@whatItDoes Lifecycle hook that is called after a directive's content has been fully
      * initialized.
+     * \@howToUse
      * {\@example core/ts/metadata/lifecycle_hooks_spec.ts region='AfterContentInit'}
      *
+     * \@description
      * See {\@linkDocs guide/lifecycle-hooks#aftercontent "Lifecycle Hooks Guide"}.
      *
+     * \@stable
      * @abstract
      */
     var AfterContentInit = (function () {
@@ -944,10 +892,14 @@
         return AfterContentInit;
     }());
     /**
+     * \@whatItDoes Lifecycle hook that is called after every check of a directive's content.
+     * \@howToUse
      * {\@example core/ts/metadata/lifecycle_hooks_spec.ts region='AfterContentChecked'}
      *
+     * \@description
      * See {\@linkDocs guide/lifecycle-hooks#aftercontent "Lifecycle Hooks Guide"}.
      *
+     * \@stable
      * @abstract
      */
     var AfterContentChecked = (function () {
@@ -961,11 +913,15 @@
         return AfterContentChecked;
     }());
     /**
+     * \@whatItDoes Lifecycle hook that is called after a component's view has been fully
      * initialized.
+     * \@howToUse
      * {\@example core/ts/metadata/lifecycle_hooks_spec.ts region='AfterViewInit'}
      *
+     * \@description
      * See {\@linkDocs guide/lifecycle-hooks#afterview "Lifecycle Hooks Guide"}.
      *
+     * \@stable
      * @abstract
      */
     var AfterViewInit = (function () {
@@ -979,10 +935,14 @@
         return AfterViewInit;
     }());
     /**
+     * \@whatItDoes Lifecycle hook that is called after every check of a component's view.
+     * \@howToUse
      * {\@example core/ts/metadata/lifecycle_hooks_spec.ts region='AfterViewChecked'}
      *
+     * \@description
      * See {\@linkDocs guide/lifecycle-hooks#afterview "Lifecycle Hooks Guide"}.
      *
+     * \@stable
      * @abstract
      */
     var AfterViewChecked = (function () {
@@ -1054,6 +1014,7 @@
      * ### Example
      *
      * ```
+     * \@Component({
      *   selector: 'greet',
      *   template: 'Hello {{name}}!',
      * })
@@ -1088,7 +1049,9 @@
     }());
 
     /**
+     * \@whatItDoes Represents the version of Angular
      *
+     * \@stable
      */
     var Version = (function () {
         /**
@@ -1129,6 +1092,49 @@
     var /** @type {?} */ VERSION = new Version('0.0.0-PLACEHOLDER');
 
     /**
+     * Inject decorator and metadata.
+     *
+     * @stable
+     * @Annotation
+     */
+    var /** @type {?} */ Inject = makeParamDecorator('Inject', [['token', undefined]]);
+    /**
+     * Optional decorator and metadata.
+     *
+     * @stable
+     * @Annotation
+     */
+    var /** @type {?} */ Optional = makeParamDecorator('Optional', []);
+    /**
+     * Injectable decorator and metadata.
+     *
+     * @stable
+     * @Annotation
+     */
+    var /** @type {?} */ Injectable = (makeDecorator('Injectable', []));
+    /**
+     * Self decorator and metadata.
+     *
+     * @stable
+     * @Annotation
+     */
+    var /** @type {?} */ Self = makeParamDecorator('Self', []);
+    /**
+     * SkipSelf decorator and metadata.
+     *
+     * @stable
+     * @Annotation
+     */
+    var /** @type {?} */ SkipSelf = makeParamDecorator('SkipSelf', []);
+    /**
+     * Host decorator and metadata.
+     *
+     * @stable
+     * @Annotation
+     */
+    var /** @type {?} */ Host = makeParamDecorator('Host', []);
+
+    /**
      * Allows to refer to references which are not yet defined.
      *
      * For instance, `forwardRef` is used when the `token` which we need to refer to for the purposes of
@@ -1138,6 +1144,7 @@
      *
      * ### Example
      * {\@example core/di/ts/forward_ref/forward_ref_spec.ts region='forward_ref'}
+     * \@experimental
      * @param {?} forwardRefFn
      * @return {?}
      */
@@ -1156,6 +1163,7 @@
      * {\@example core/di/ts/forward_ref/forward_ref_spec.ts region='resolve_forward_ref'}
      *
      * See: {\@link forwardRef}
+     * \@experimental
      * @param {?} type
      * @return {?}
      */
@@ -1175,7 +1183,7 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
-     * @license undefined
+     * @license
      * Copyright Google Inc. All Rights Reserved.
      *
      * Use of this source code is governed by an MIT-style license that can be
@@ -1185,6 +1193,9 @@
     function unimplemented() {
         throw new Error('unimplemented');
     }
+    /**
+     * \@stable
+     */
     var BaseError = (function (_super) {
         __extends(BaseError, _super);
         /**
@@ -1239,6 +1250,9 @@
         BaseError.prototype.toString = function () { return this._nativeError.toString(); };
         return BaseError;
     }(Error));
+    /**
+     * \@stable
+     */
     var WrappedError = (function (_super) {
         __extends(WrappedError, _super);
         /**
@@ -1283,11 +1297,14 @@
         return _NullInjector;
     }());
     /**
+     * \@whatItDoes Injector interface
+     * \@howToUse
      * ```
      * const injector: Injector = ...;
      * injector.get(...);
      * ```
      *
+     * \@description
      * For more details, see the {\@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
      *
      * ### Example
@@ -1297,6 +1314,7 @@
      * `Injector` returns itself when given `Injector` as a token:
      * {\@example core/di/ts/injector_spec.ts region='injectInjector'}
      *
+     * \@stable
      * @abstract
      */
     var Injector = (function () {
@@ -1359,6 +1377,7 @@
     }
     /**
      * Base class for all errors arising from misconfigured providers.
+     * \@stable
      */
     var AbstractProviderError = (function (_super) {
         __extends$1(AbstractProviderError, _super);
@@ -1399,6 +1418,7 @@
      *
      * expect(() => Injector.resolveAndCreate([A])).toThrowError();
      * ```
+     * \@stable
      */
     var NoProviderError = (function (_super) {
         __extends$1(NoProviderError, _super);
@@ -1429,6 +1449,7 @@
      * ```
      *
      * Retrieving `A` or `B` throws a `CyclicDependencyError` as the graph above cannot be constructed.
+     * \@stable
      */
     var CyclicDependencyError = (function (_super) {
         __extends$1(CyclicDependencyError, _super);
@@ -1467,6 +1488,7 @@
      *   expect(e.originalStack).toBeDefined();
      * }
      * ```
+     * \@stable
      */
     var InstantiationError = (function (_super) {
         __extends$1(InstantiationError, _super);
@@ -1520,6 +1542,7 @@
      * ```typescript
      * expect(() => Injector.resolveAndCreate(["not a type"])).toThrowError();
      * ```
+     * \@stable
      */
     var InvalidProviderError = (function (_super) {
         __extends$1(InvalidProviderError, _super);
@@ -1558,6 +1581,7 @@
      *
      * expect(() => Injector.resolveAndCreate([A,B])).toThrowError();
      * ```
+     * \@stable
      */
     var NoAnnotationError = (function (_super) {
         __extends$1(NoAnnotationError, _super);
@@ -1603,6 +1627,7 @@
      *
      * expect(() => injector.getAt(100)).toThrowError();
      * ```
+     * \@stable
      */
     var OutOfBoundsError = (function (_super) {
         __extends$1(OutOfBoundsError, _super);
@@ -1653,6 +1678,7 @@
      * `Key` should not be created directly. {\@link ReflectiveInjector} creates keys automatically when
      * resolving
      * providers.
+     * \@experimental
      */
     var ReflectiveKey = (function () {
         /**
@@ -1694,6 +1720,9 @@
         });
         return ReflectiveKey;
     }());
+    /**
+     * \@internal
+     */
     var KeyRegistry = (function () {
         function KeyRegistry() {
             this._allKeys = new Map();
@@ -1742,6 +1771,13 @@
      * @stable
      */
     var /** @type {?} */ Type = Function;
+    /**
+     * @param {?} v
+     * @return {?}
+     */
+    function isType(v) {
+        return typeof v === 'function';
+    }
 
     /**
      * Attention: This regex has to hold even if the code is minified!
@@ -1770,6 +1806,7 @@
             return new (t.bind.apply(t, [void 0].concat(args)))();
         }; };
         /**
+         * \@internal
          * @param {?} paramTypes
          * @param {?} paramAnnotations
          * @return {?}
@@ -1854,7 +1891,10 @@
         ReflectionCapabilities.prototype.parameters = function (type) {
             // Note: only report metadata if we have at least one class decorator
             // to stay in sync with the static reflector.
-            var /** @type {?} */ parentCtor = Object.getPrototypeOf(type.prototype).constructor;
+            if (!isType(type)) {
+                return [];
+            }
+            var /** @type {?} */ parentCtor = getParentCtor(type);
             var /** @type {?} */ parameters = this._ownParameters(type, parentCtor);
             if (!parameters && parentCtor !== Object) {
                 parameters = this.parameters(parentCtor);
@@ -1889,7 +1929,10 @@
          * @return {?}
          */
         ReflectionCapabilities.prototype.annotations = function (typeOrFunc) {
-            var /** @type {?} */ parentCtor = Object.getPrototypeOf(typeOrFunc.prototype).constructor;
+            if (!isType(typeOrFunc)) {
+                return [];
+            }
+            var /** @type {?} */ parentCtor = getParentCtor(typeOrFunc);
             var /** @type {?} */ ownAnnotations = this._ownAnnotations(typeOrFunc, parentCtor) || [];
             var /** @type {?} */ parentAnnotations = parentCtor !== Object ? this.annotations(parentCtor) : [];
             return parentAnnotations.concat(ownAnnotations);
@@ -1929,7 +1972,10 @@
          * @return {?}
          */
         ReflectionCapabilities.prototype.propMetadata = function (typeOrFunc) {
-            var /** @type {?} */ parentCtor = Object.getPrototypeOf(typeOrFunc.prototype).constructor;
+            if (!isType(typeOrFunc)) {
+                return {};
+            }
+            var /** @type {?} */ parentCtor = getParentCtor(typeOrFunc);
             var /** @type {?} */ propMetadata = {};
             if (parentCtor !== Object) {
                 var /** @type {?} */ parentPropMetadata_1 = this.propMetadata(parentCtor);
@@ -2019,6 +2065,17 @@
             var /** @type {?} */ annotationArgs = decoratorInvocation.args ? decoratorInvocation.args : [];
             return new (annotationCls.bind.apply(annotationCls, [void 0].concat(annotationArgs)))();
         });
+    }
+    /**
+     * @param {?} ctor
+     * @return {?}
+     */
+    function getParentCtor(ctor) {
+        var /** @type {?} */ parentProto = Object.getPrototypeOf(ctor.prototype);
+        var /** @type {?} */ parentCtor = parentProto ? parentProto.constructor : null;
+        // Note: We always use `Object` as the null value
+        // to simplify checking later on.
+        return parentCtor || Object;
     }
 
     /**
@@ -2234,6 +2291,7 @@
     /**
      * An internal resolved representation of a factory function created by resolving {\@link
      * Provider}.
+     * \@experimental
      */
     var ResolvedReflectiveFactory = (function () {
         /**
@@ -2808,9 +2866,11 @@
      * The following example creates an `Injector` configured to create `Engine` and `Car`.
      *
      * ```typescript
+     * \@Injectable()
      * class Engine {
      * }
      *
+     * \@Injectable()
      * class Car {
      *   constructor(public engine:Engine) {}
      * }
@@ -2824,6 +2884,7 @@
      * Notice, we don't use the `new` operator because we explicitly want to have the `Injector`
      * resolve all of the object's dependencies automatically.
      *
+     * \@stable
      * @abstract
      */
     var ReflectiveInjector = (function () {
@@ -2838,9 +2899,11 @@
          * ### Example ([live demo](http://plnkr.co/edit/AiXTHi?p=preview))
          *
          * ```typescript
+         * \@Injectable()
          * class Engine {
          * }
          *
+         * \@Injectable()
          * class Car {
          *   constructor(public engine:Engine) {}
          * }
@@ -2874,9 +2937,11 @@
          * ### Example ([live demo](http://plnkr.co/edit/ePOccA?p=preview))
          *
          * ```typescript
+         * \@Injectable()
          * class Engine {
          * }
          *
+         * \@Injectable()
          * class Car {
          *   constructor(public engine:Engine) {}
          * }
@@ -2905,9 +2970,11 @@
          * ### Example ([live demo](http://plnkr.co/edit/KrSMci?p=preview))
          *
          * ```typescript
+         * \@Injectable()
          * class Engine {
          * }
          *
+         * \@Injectable()
          * class Car {
          *   constructor(public engine:Engine) {}
          * }
@@ -2916,6 +2983,7 @@
          * var injector = ReflectiveInjector.fromResolvedProviders(providers);
          * expect(injector.get(Car) instanceof Car).toBe(true);
          * ```
+         * \@experimental
          * @param {?} providers
          * @param {?=} parent
          * @return {?}
@@ -3012,9 +3080,11 @@
          * ### Example ([live demo](http://plnkr.co/edit/yvVXoB?p=preview))
          *
          * ```typescript
+         * \@Injectable()
          * class Engine {
          * }
          *
+         * \@Injectable()
          * class Car {
          *   constructor(public engine:Engine) {}
          * }
@@ -3037,9 +3107,11 @@
          * ### Example ([live demo](http://plnkr.co/edit/ptCImQ?p=preview))
          *
          * ```typescript
+         * \@Injectable()
          * class Engine {
          * }
          *
+         * \@Injectable()
          * class Car {
          *   constructor(public engine:Engine) {}
          * }
@@ -3101,6 +3173,7 @@
         });
         Object.defineProperty(ReflectiveInjector_.prototype, "internalStrategy", {
             /**
+             * \@internal
              * Internal. Do not use.
              * We return `any` not to export the InjectorStrategy type.
              * @return {?}
@@ -3142,6 +3215,7 @@
             return this._instantiateProvider(provider);
         };
         /**
+         * \@internal
          * @param {?} provider
          * @return {?}
          */
@@ -3326,6 +3400,7 @@
             }
         };
         /**
+         * \@internal
          * @param {?} key
          * @param {?} notFoundValue
          * @return {?}
@@ -3339,6 +3414,7 @@
             }
         };
         /**
+         * \@internal
          * @param {?} key
          * @param {?} notFoundValue
          * @return {?}
@@ -3348,6 +3424,7 @@
             return (obj !== UNDEFINED) ? obj : this._throwOrNull(key, notFoundValue);
         };
         /**
+         * \@internal
          * @param {?} key
          * @param {?} notFoundValue
          * @param {?} lowerBoundVisibility
@@ -3415,7 +3492,9 @@
      * found in the LICENSE file at https://angular.io/license
      */
     /**
+     * \@whatItDoes Provides a hook for centralized exception handling.
      *
+     * \@description
      *
      * The default implementation of `ErrorHandler` prints error messages to the `console`. To
      * intercept error handling, write a custom exception handler that replaces this default as
@@ -3430,11 +3509,13 @@
      *   }
      * }
      *
+     * \@NgModule({
      *   providers: [{provide: ErrorHandler, useClass: MyErrorHandler}]
      * })
      * class MyModule {}
      * ```
      *
+     * \@stable
      */
     var ErrorHandler = (function () {
         /**
@@ -3474,6 +3555,7 @@
                 throw error;
         };
         /**
+         * \@internal
          * @param {?} error
          * @return {?}
          */
@@ -3481,6 +3563,7 @@
             return error instanceof Error ? error.message : error.toString();
         };
         /**
+         * \@internal
          * @param {?} error
          * @return {?}
          */
@@ -3492,6 +3575,7 @@
             return null;
         };
         /**
+         * \@internal
          * @param {?} error
          * @return {?}
          */
@@ -3503,6 +3587,7 @@
             return e;
         };
         /**
+         * \@internal
          * @param {?} error
          * @return {?}
          */
@@ -3686,7 +3771,7 @@
     }
 
     /**
-     * @license undefined
+     * @license
      * Copyright Google Inc. All Rights Reserved.
      *
      * Use of this source code is governed by an MIT-style license that can be
@@ -3708,6 +3793,7 @@
     /**
      * A class that reflects the state of running {\@link APP_INITIALIZER}s.
      *
+     * \@experimental
      */
     var ApplicationInitStatus = (function () {
         /**
@@ -3844,6 +3930,7 @@
     /**
      * Indicates that a component is still being loaded in a synchronous compile.
      *
+     * \@stable
      */
     var ComponentStillLoadingError = (function (_super) {
         __extends$4(ComponentStillLoadingError, _super);
@@ -3859,6 +3946,7 @@
     /**
      * Combination of NgModuleFactory and ComponentFactorys.
      *
+     * \@experimental
      */
     var ModuleWithComponentFactories = (function () {
         /**
@@ -3885,6 +3973,7 @@
      * Each `\@NgModule` provides an own `Compiler` to its injector,
      * that will use the directives/pipes of the ng module for compilation
      * of components.
+     * \@stable
      */
     var Compiler = (function () {
         function Compiler() {
@@ -3939,6 +4028,11 @@
          * @return {?}
          */
         Compiler.prototype.clearCacheFor = function (type) { };
+        Compiler.decorators = [
+            { type: Injectable },
+        ];
+        /** @nocollapse */
+        Compiler.ctorParameters = function () { return []; };
         return Compiler;
     }());
     /**
@@ -3950,6 +4044,7 @@
     /**
      * A factory for creating a Compiler
      *
+     * \@experimental
      * @abstract
      */
     var CompilerFactory = (function () {
@@ -3995,6 +4090,7 @@
      * title gets clicked:
      *
      * ```
+     * \@Component({
      *   selector: 'zippy',
      *   template: `
      *   <div class="zippy">
@@ -4030,6 +4126,7 @@
      * https://github.com/jhusain/observable-spec
      *
      * Once a reference implementation of the spec is available, switch to it.
+     * \@stable
      */
     var EventEmitter = (function (_super) {
         __extends$6(EventEmitter, _super);
@@ -4106,6 +4203,7 @@
      * import {Component, NgZone} from '\@angular/core';
      * import {NgIf} from '\@angular/common';
      *
+     * \@Component({
      *   selector: 'ng-zone-demo'.
      *   template: `
      *     <h2>Demo: NgZone</h2>
@@ -4155,6 +4253,7 @@
      *   }
      * }
      * ```
+     * \@experimental
      */
     var NgZone = (function () {
         /**
@@ -4490,6 +4589,9 @@
         return DefaultIterableDifferFactory;
     }());
     var /** @type {?} */ trackByIdentity = function (index, item) { return item; };
+    /**
+     * @deprecated v4.0.0 - Should not be part of public API.
+     */
     var DefaultIterableDiffer = (function () {
         /**
          * @param {?=} _trackByFn
@@ -4646,7 +4748,7 @@
          * @param {?} collection
          * @return {?}
          */
-        DefaultIterableDiffer.prototype.diff = function (collection) {
+        DefaultIterableDiffer.prototype.diff = function (collection /* |Iterable<V> */) {
             if (isBlank(collection))
                 collection = [];
             if (!isListLikeIterable(collection)) {
@@ -4667,7 +4769,7 @@
          * @param {?} collection
          * @return {?}
          */
-        DefaultIterableDiffer.prototype.check = function (collection) {
+        DefaultIterableDiffer.prototype.check = function (collection /* |Iterable<V> */) {
             var _this = this;
             this._reset();
             var /** @type {?} */ record = this._itHead;
@@ -4676,8 +4778,8 @@
             var /** @type {?} */ item;
             var /** @type {?} */ itemTrackBy;
             if (Array.isArray(collection)) {
-                var /** @type {?} */ list = collection;
-                this._length = collection.length;
+                var /** @type {?} */ list = (collection);
+                this._length = list.length;
                 for (var /** @type {?} */ index_1 = 0; index_1 < this._length; index_1++) {
                     item = list[index_1];
                     itemTrackBy = this._trackByFn(index_1, item);
@@ -4698,7 +4800,7 @@
             }
             else {
                 index = 0;
-                iterateListLike(collection, function (item /** TODO #9100 */) {
+                iterateListLike(collection, function (item) {
                     itemTrackBy = _this._trackByFn(index, item);
                     if (record === null || !looseIdentical(record.trackById, itemTrackBy)) {
                         record = _this._mismatch(record, item, itemTrackBy, index);
@@ -4738,6 +4840,7 @@
          * Set the previousIndexes of moved and added items to their currentIndexes
          * Reset the list of additions, moves and removals
          *
+         * \@internal
          * @return {?}
          */
         DefaultIterableDiffer.prototype._reset = function () {
@@ -4768,6 +4871,7 @@
          * - `item` is the current item in the collection
          * - `index` is the position of the item in the collection
          *
+         * \@internal
          * @param {?} record
          * @param {?} item
          * @param {?} itemTrackBy
@@ -4807,7 +4911,7 @@
                 else {
                     // It is a new item: add it.
                     record =
-                        this._addAfter(new CollectionChangeRecord(item, itemTrackBy), previousRecord, index);
+                        this._addAfter(new IterableChangeRecord_(item, itemTrackBy), previousRecord, index);
                 }
             }
             return record;
@@ -4837,6 +4941,7 @@
          * better way to think of it is as insert of 'b' rather then switch 'a' with 'b' and then add 'a'
          * at the end.
          *
+         * \@internal
          * @param {?} record
          * @param {?} item
          * @param {?} itemTrackBy
@@ -4855,10 +4960,11 @@
             return record;
         };
         /**
-         * Get rid of any excess {\@link CollectionChangeRecord}s from the previous collection
+         * Get rid of any excess {\@link IterableChangeRecord_}s from the previous collection
          *
-         * - `record` The first excess {\@link CollectionChangeRecord}.
+         * - `record` The first excess {\@link IterableChangeRecord_}.
          *
+         * \@internal
          * @param {?} record
          * @return {?}
          */
@@ -4889,6 +4995,7 @@
             }
         };
         /**
+         * \@internal
          * @param {?} record
          * @param {?} prevRecord
          * @param {?} index
@@ -4917,6 +5024,7 @@
             return record;
         };
         /**
+         * \@internal
          * @param {?} record
          * @param {?} prevRecord
          * @param {?} index
@@ -4929,6 +5037,7 @@
             return record;
         };
         /**
+         * \@internal
          * @param {?} record
          * @param {?} prevRecord
          * @param {?} index
@@ -4950,6 +5059,7 @@
             return record;
         };
         /**
+         * \@internal
          * @param {?} record
          * @param {?} prevRecord
          * @param {?} index
@@ -4986,6 +5096,7 @@
             return record;
         };
         /**
+         * \@internal
          * @param {?} record
          * @return {?}
          */
@@ -4993,6 +5104,7 @@
             return this._addToRemovals(this._unlink(record));
         };
         /**
+         * \@internal
          * @param {?} record
          * @return {?}
          */
@@ -5020,6 +5132,7 @@
             return record;
         };
         /**
+         * \@internal
          * @param {?} record
          * @param {?} toIndex
          * @return {?}
@@ -5069,6 +5182,7 @@
             return record;
         };
         /**
+         * \@internal
          * @param {?} record
          * @param {?} item
          * @return {?}
@@ -5088,17 +5202,17 @@
          */
         DefaultIterableDiffer.prototype.toString = function () {
             var /** @type {?} */ list = [];
-            this.forEachItem(function (record /** TODO #9100 */) { return list.push(record); });
+            this.forEachItem(function (record) { return list.push(record); });
             var /** @type {?} */ previous = [];
-            this.forEachPreviousItem(function (record /** TODO #9100 */) { return previous.push(record); });
+            this.forEachPreviousItem(function (record) { return previous.push(record); });
             var /** @type {?} */ additions = [];
-            this.forEachAddedItem(function (record /** TODO #9100 */) { return additions.push(record); });
+            this.forEachAddedItem(function (record) { return additions.push(record); });
             var /** @type {?} */ moves = [];
-            this.forEachMovedItem(function (record /** TODO #9100 */) { return moves.push(record); });
+            this.forEachMovedItem(function (record) { return moves.push(record); });
             var /** @type {?} */ removals = [];
-            this.forEachRemovedItem(function (record /** TODO #9100 */) { return removals.push(record); });
+            this.forEachRemovedItem(function (record) { return removals.push(record); });
             var /** @type {?} */ identityChanges = [];
-            this.forEachIdentityChange(function (record /** TODO #9100 */) { return identityChanges.push(record); });
+            this.forEachIdentityChange(function (record) { return identityChanges.push(record); });
             return 'collection: ' + list.join(', ') + '\n' +
                 'previous: ' + previous.join(', ') + '\n' +
                 'additions: ' + additions.join(', ') + '\n' +
@@ -5108,12 +5222,15 @@
         };
         return DefaultIterableDiffer;
     }());
-    var CollectionChangeRecord = (function () {
+    /**
+     * \@stable
+     */
+    var IterableChangeRecord_ = (function () {
         /**
          * @param {?} item
          * @param {?} trackById
          */
-        function CollectionChangeRecord(item, trackById) {
+        function IterableChangeRecord_(item, trackById) {
             this.item = item;
             this.trackById = trackById;
             this.currentIndex = null;
@@ -5142,12 +5259,12 @@
         /**
          * @return {?}
          */
-        CollectionChangeRecord.prototype.toString = function () {
+        IterableChangeRecord_.prototype.toString = function () {
             return this.previousIndex === this.currentIndex ? stringify(this.item) :
                 stringify(this.item) + '[' +
                     stringify(this.previousIndex) + '->' + stringify(this.currentIndex) + ']';
         };
-        return CollectionChangeRecord;
+        return IterableChangeRecord_;
     }());
     var _DuplicateItemRecordList = (function () {
         function _DuplicateItemRecordList() {
@@ -5195,7 +5312,7 @@
             return null;
         };
         /**
-         * Remove one {\@link CollectionChangeRecord} from the list of duplicates.
+         * Remove one {\@link IterableChangeRecord_} from the list of duplicates.
          *
          * Returns whether the list of duplicates is empty.
          * @param {?} record
@@ -5205,7 +5322,7 @@
             // todo(vicb)
             // assert(() {
             //  // verify that the record being removed is in the list.
-            //  for (CollectionChangeRecord cursor = _head; cursor != null; cursor = cursor._nextDup) {
+            //  for (IterableChangeRecord_ cursor = _head; cursor != null; cursor = cursor._nextDup) {
             //    if (identical(cursor, record)) return true;
             //  }
             //  return false;
@@ -5246,7 +5363,7 @@
             duplicates.add(record);
         };
         /**
-         * Retrieve the `value` using key. Because the CollectionChangeRecord value may be one which we
+         * Retrieve the `value` using key. Because the IterableChangeRecord_ value may be one which we
          * have already iterated over, we use the afterIndex to pretend it is not there.
          *
          * Use case: `[a, b, c, a, a]` if we are at index `3` which is the second `a` then asking if we
@@ -5262,7 +5379,7 @@
             return recordList ? recordList.get(trackById, afterIndex) : null;
         };
         /**
-         * Removes a {\@link CollectionChangeRecord} from the list of duplicates.
+         * Removes a {\@link IterableChangeRecord_} from the list of duplicates.
          *
          * The list of duplicates also is removed from the map if it gets empty.
          * @param {?} record
@@ -5324,7 +5441,9 @@
          * @param {?} cdRef
          * @return {?}
          */
-        DefaultKeyValueDifferFactory.prototype.create = function (cdRef) { return new DefaultKeyValueDiffer(); };
+        DefaultKeyValueDifferFactory.prototype.create = function (cdRef) {
+            return new DefaultKeyValueDiffer();
+        };
         return DefaultKeyValueDifferFactory;
     }());
     var DefaultKeyValueDiffer = (function () {
@@ -5446,7 +5565,7 @@
                         _this._maybeAddToChanges(newSeqRecord, value);
                     }
                     else {
-                        newSeqRecord = new KeyValueChangeRecord(key);
+                        newSeqRecord = new KeyValueChangeRecord_(key);
                         records.set(key, newSeqRecord);
                         newSeqRecord.currentValue = value;
                         _this._addToAdditions(newSeqRecord);
@@ -5471,6 +5590,7 @@
             return this.isDirty;
         };
         /**
+         * \@internal
          * @return {?}
          */
         DefaultKeyValueDiffer.prototype._reset = function () {
@@ -5643,6 +5763,7 @@
                 'removals: ' + removals.join(', ') + '\n';
         };
         /**
+         * \@internal
          * @param {?} obj
          * @param {?} fn
          * @return {?}
@@ -5657,11 +5778,14 @@
         };
         return DefaultKeyValueDiffer;
     }());
-    var KeyValueChangeRecord = (function () {
+    /**
+     * \@stable
+     */
+    var KeyValueChangeRecord_ = (function () {
         /**
          * @param {?} key
          */
-        function KeyValueChangeRecord(key) {
+        function KeyValueChangeRecord_(key) {
             this.key = key;
             this.previousValue = null;
             this.currentValue = null;
@@ -5681,17 +5805,18 @@
         /**
          * @return {?}
          */
-        KeyValueChangeRecord.prototype.toString = function () {
+        KeyValueChangeRecord_.prototype.toString = function () {
             return looseIdentical(this.previousValue, this.currentValue) ?
                 stringify(this.key) :
                 (stringify(this.key) + '[' + stringify(this.previousValue) + '->' +
                     stringify(this.currentValue) + ']');
         };
-        return KeyValueChangeRecord;
+        return KeyValueChangeRecord_;
     }());
 
     /**
      * A repository of different iterable diffing strategies used by NgFor, NgClass, and others.
+     * \@stable
      */
     var IterableDiffers = (function () {
         /**
@@ -5727,6 +5852,7 @@
          * ### Example
          *
          * ```
+         * \@Component({
          *   viewProviders: [
          *     IterableDiffers.extend([new ImmutableListDiffer()])
          *   ]
@@ -5769,6 +5895,7 @@
 
     /**
      * A repository of different Map diffing strategies used by NgClass, NgStyle, and others.
+     * \@stable
      */
     var KeyValueDiffers = (function () {
         /**
@@ -5783,14 +5910,11 @@
          * @return {?}
          */
         KeyValueDiffers.create = function (factories, parent) {
-            if (isPresent(parent)) {
+            if (parent) {
                 var /** @type {?} */ copied = parent.factories.slice();
                 factories = factories.concat(copied);
-                return new KeyValueDiffers(factories);
             }
-            else {
-                return new KeyValueDiffers(factories);
-            }
+            return new KeyValueDiffers(factories);
         };
         /**
          * Takes an array of {\@link KeyValueDifferFactory} and returns a provider used to extend the
@@ -5804,6 +5928,7 @@
          * ### Example
          *
          * ```
+         * \@Component({
          *   viewProviders: [
          *     KeyValueDiffers.extend([new ImmutableMapDiffer()])
          *   ]
@@ -5818,8 +5943,7 @@
                 useFactory: function (parent) {
                     if (!parent) {
                         // Typically would occur when calling KeyValueDiffers.extend inside of dependencies passed
-                        // to
-                        // bootstrap(), which would override default pipes instead of extending them.
+                        // to bootstrap(), which would override default pipes instead of extending them.
                         throw new Error('Cannot extend KeyValueDiffers without a parent injector');
                     }
                     return KeyValueDiffers.create(factories, parent);
@@ -5834,19 +5958,14 @@
          */
         KeyValueDiffers.prototype.find = function (kv) {
             var /** @type {?} */ factory = this.factories.find(function (f) { return f.supports(kv); });
-            if (isPresent(factory)) {
+            if (factory) {
                 return factory;
             }
-            else {
-                throw new Error("Cannot find a differ supporting object '" + kv + "'");
-            }
+            throw new Error("Cannot find a differ supporting object '" + kv + "'");
         };
         return KeyValueDiffers;
     }());
 
-    var /** @type {?} */ UNINITIALIZED = {
-        toString: function () { return 'CD_INIT_VALUE'; }
-    };
     /**
      * @param {?} a
      * @param {?} b
@@ -5880,6 +5999,7 @@
      *    return WrappedValue.wrap(this._latestValue); // this will force update
      *  }
      * ```
+     * \@stable
      */
     var WrappedValue = (function () {
         /**
@@ -5921,25 +6041,29 @@
     }());
     /**
      * Represents a basic change from a previous to a new value.
+     * \@stable
      */
     var SimpleChange = (function () {
         /**
          * @param {?} previousValue
          * @param {?} currentValue
+         * @param {?} firstChange
          */
-        function SimpleChange(previousValue, currentValue) {
+        function SimpleChange(previousValue, currentValue, firstChange) {
             this.previousValue = previousValue;
             this.currentValue = currentValue;
+            this.firstChange = firstChange;
         }
         /**
          * Check whether the new value is the first value assigned.
          * @return {?}
          */
-        SimpleChange.prototype.isFirstChange = function () { return this.previousValue === UNINITIALIZED; };
+        SimpleChange.prototype.isFirstChange = function () { return this.firstChange; };
         return SimpleChange;
     }());
 
     /**
+     * \@stable
      * @abstract
      */
     var ChangeDetectorRef = (function () {
@@ -5953,6 +6077,7 @@
          * ### Example ([live demo](http://plnkr.co/edit/GC512b?p=preview))
          *
          * ```typescript
+         * \@Component({
          *   selector: 'cmp',
          *   changeDetection: ChangeDetectionStrategy.OnPush,
          *   template: `Number of ticks: {{numberOfTicks}}`
@@ -5969,6 +6094,7 @@
          *   }
          * }
          *
+         * \@Component({
          *   selector: 'app',
          *   changeDetection: ChangeDetectionStrategy.OnPush,
          *   template: `
@@ -6009,6 +6135,7 @@
          *   }
          * }
          *
+         * \@Component({
          *   selector: 'giant-list',
          *   template: `
          *     <li *ngFor="let d of dataProvider.data">Data {{d}}</lig>
@@ -6023,6 +6150,7 @@
          *   }
          * }
          *
+         * \@Component({
          *   selector: 'app',
          *   providers: [DataProvider],
          *   template: `
@@ -6095,6 +6223,7 @@
          *   }
          * }
          *
+         * \@Component({
          *   selector: 'live-data',
          *   inputs: ['live'],
          *   template: 'Data: {{dataProvider.data}}'
@@ -6110,6 +6239,7 @@
          *   }
          * }
          *
+         * \@Component({
          *   selector: 'app',
          *   providers: [DataProvider],
          *   template: `
@@ -6215,6 +6345,7 @@
         return RenderDebugInfo;
     }());
     /**
+     * \@experimental
      * @abstract
      */
     var Renderer = (function () {
@@ -6380,6 +6511,7 @@
      * If you are implementing a custom renderer, you must implement this interface.
      *
      * The default Renderer implementation is `DomRenderer`. Also available is `WebWorkerRenderer`.
+     * \@experimental
      * @abstract
      */
     var RootRenderer = (function () {
@@ -6410,6 +6542,7 @@
     /**
      * Sanitizer is used by the views to sanitize potentially dangerous values.
      *
+     * \@stable
      * @abstract
      */
     var Sanitizer = (function () {
@@ -6447,6 +6580,7 @@
      * ### Example
      *
      * ```typescript
+     * \@Component({
      *   selector: 'parent',
      *   template: '<child [prop]="parentProp"></child>',
      * })
@@ -6454,6 +6588,7 @@
      *   parentProp = 'init';
      * }
      *
+     * \@Directive({selector: 'child', inputs: ['prop']})
      * class Child {
      *   constructor(public parent: Parent) {}
      *
@@ -6464,16 +6599,18 @@
      *   }
      * }
      * ```
+     * \@stable
      */
     var ExpressionChangedAfterItHasBeenCheckedError = (function (_super) {
         __extends$7(ExpressionChangedAfterItHasBeenCheckedError, _super);
         /**
          * @param {?} oldValue
          * @param {?} currValue
+         * @param {?} isFirstCheck
          */
-        function ExpressionChangedAfterItHasBeenCheckedError(oldValue, currValue) {
+        function ExpressionChangedAfterItHasBeenCheckedError(oldValue, currValue, isFirstCheck) {
             var msg = "Expression has changed after it was checked. Previous value: '" + oldValue + "'. Current value: '" + currValue + "'.";
-            if (oldValue === UNINITIALIZED) {
+            if (isFirstCheck) {
                 msg +=
                     " It seems like the view has been created after its parent and its children have been dirty checked." +
                         " Has it been created in a change detection hook ?";
@@ -6487,6 +6624,7 @@
      *
      * This error wraps the original exception to attach additional contextual information that can
      * be useful for debugging.
+     * \@stable
      */
     var ViewWrappedError = (function (_super) {
         __extends$7(ViewWrappedError, _super);
@@ -6506,6 +6644,7 @@
      * This error indicates a bug in the framework.
      *
      * This is an internal Angular error.
+     * \@stable
      */
     var ViewDestroyedError = (function (_super) {
         __extends$7(ViewDestroyedError, _super);
@@ -6527,10 +6666,10 @@
         function ViewUtils(_renderer, sanitizer, animationQueue) {
             this._renderer = _renderer;
             this.animationQueue = animationQueue;
-            this._nextCompTypeId = 0;
             this.sanitizer = sanitizer;
         }
         /**
+         * \@internal
          * @param {?} renderComponentType
          * @return {?}
          */
@@ -6645,20 +6784,120 @@
         return v != null ? v.toString() : '';
     }
     /**
-     * @param {?} throwOnChange
+     * @param {?} view
      * @param {?} oldValue
      * @param {?} newValue
+     * @param {?} forceUpdate
      * @return {?}
      */
-    function checkBinding(throwOnChange, oldValue, newValue) {
-        if (throwOnChange) {
-            if (!devModeEqual(oldValue, newValue)) {
-                throw new ExpressionChangedAfterItHasBeenCheckedError(oldValue, newValue);
+    function checkBinding(view, oldValue, newValue, forceUpdate) {
+        var /** @type {?} */ isFirstCheck = view.numberOfChecks === 0;
+        if (view.throwOnChange) {
+            if (isFirstCheck || !devModeEqual(oldValue, newValue)) {
+                throw new ExpressionChangedAfterItHasBeenCheckedError(oldValue, newValue, isFirstCheck);
             }
             return false;
         }
         else {
-            return !looseIdentical(oldValue, newValue);
+            return isFirstCheck || forceUpdate || !looseIdentical(oldValue, newValue);
+        }
+    }
+    /**
+     * @param {?} view
+     * @param {?} oldValue
+     * @param {?} newValue
+     * @param {?} forceUpdate
+     * @return {?}
+     */
+    function checkBindingChange(view, oldValue, newValue, forceUpdate) {
+        if (checkBinding(view, oldValue, newValue, forceUpdate)) {
+            return new SimpleChange(oldValue, newValue, view.numberOfChecks === 0);
+        }
+    }
+    /**
+     * @param {?} view
+     * @param {?} renderElement
+     * @param {?} oldValue
+     * @param {?} newValue
+     * @param {?} forceUpdate
+     * @return {?}
+     */
+    function checkRenderText(view, renderElement, oldValue, newValue, forceUpdate) {
+        if (checkBinding(view, oldValue, newValue, forceUpdate)) {
+            view.renderer.setText(renderElement, newValue);
+        }
+    }
+    /**
+     * @param {?} view
+     * @param {?} renderElement
+     * @param {?} propName
+     * @param {?} oldValue
+     * @param {?} newValue
+     * @param {?} forceUpdate
+     * @param {?} securityContext
+     * @return {?}
+     */
+    function checkRenderProperty(view, renderElement, propName, oldValue, newValue, forceUpdate, securityContext) {
+        if (checkBinding(view, oldValue, newValue, forceUpdate)) {
+            var /** @type {?} */ renderValue = securityContext ? view.viewUtils.sanitizer.sanitize(securityContext, newValue) : newValue;
+            view.renderer.setElementProperty(renderElement, propName, renderValue);
+        }
+    }
+    /**
+     * @param {?} view
+     * @param {?} renderElement
+     * @param {?} attrName
+     * @param {?} oldValue
+     * @param {?} newValue
+     * @param {?} forceUpdate
+     * @param {?} securityContext
+     * @return {?}
+     */
+    function checkRenderAttribute(view, renderElement, attrName, oldValue, newValue, forceUpdate, securityContext) {
+        if (checkBinding(view, oldValue, newValue, forceUpdate)) {
+            var /** @type {?} */ renderValue = securityContext ? view.viewUtils.sanitizer.sanitize(securityContext, newValue) : newValue;
+            renderValue = renderValue != null ? renderValue.toString() : null;
+            view.renderer.setElementAttribute(renderElement, attrName, renderValue);
+        }
+    }
+    /**
+     * @param {?} view
+     * @param {?} renderElement
+     * @param {?} className
+     * @param {?} oldValue
+     * @param {?} newValue
+     * @param {?} forceUpdate
+     * @return {?}
+     */
+    function checkRenderClass(view, renderElement, className, oldValue, newValue, forceUpdate) {
+        if (checkBinding(view, oldValue, newValue, forceUpdate)) {
+            view.renderer.setElementClass(renderElement, className, newValue);
+        }
+    }
+    /**
+     * @param {?} view
+     * @param {?} renderElement
+     * @param {?} styleName
+     * @param {?} unit
+     * @param {?} oldValue
+     * @param {?} newValue
+     * @param {?} forceUpdate
+     * @param {?} securityContext
+     * @return {?}
+     */
+    function checkRenderStyle(view, renderElement, styleName, unit, oldValue, newValue, forceUpdate, securityContext) {
+        if (checkBinding(view, oldValue, newValue, forceUpdate)) {
+            var /** @type {?} */ renderValue = securityContext ? view.viewUtils.sanitizer.sanitize(securityContext, newValue) : newValue;
+            if (renderValue != null) {
+                renderValue = renderValue.toString();
+                if (unit != null) {
+                    renderValue = renderValue + unit;
+                }
+            }
+            else {
+                renderValue = null;
+            }
+            view.renderer.setElementStyle(renderElement, styleName, renderValue);
         }
     }
     /**
@@ -6676,10 +6915,11 @@
      * @return {?}
      */
     function pureProxy1(fn) {
+        var /** @type {?} */ numberOfChecks = 0;
         var /** @type {?} */ result;
-        var /** @type {?} */ v0 = UNINITIALIZED;
+        var /** @type {?} */ v0;
         return function (p0) {
-            if (!looseIdentical(v0, p0)) {
+            if (!numberOfChecks++ || !looseIdentical(v0, p0)) {
                 v0 = p0;
                 result = fn(p0);
             }
@@ -6691,11 +6931,12 @@
      * @return {?}
      */
     function pureProxy2(fn) {
+        var /** @type {?} */ numberOfChecks = 0;
         var /** @type {?} */ result;
-        var /** @type {?} */ v0 = UNINITIALIZED;
-        var /** @type {?} */ v1 = UNINITIALIZED;
+        var /** @type {?} */ v0;
+        var /** @type {?} */ v1;
         return function (p0, p1) {
-            if (!looseIdentical(v0, p0) || !looseIdentical(v1, p1)) {
+            if (!numberOfChecks++ || !looseIdentical(v0, p0) || !looseIdentical(v1, p1)) {
                 v0 = p0;
                 v1 = p1;
                 result = fn(p0, p1);
@@ -6708,12 +6949,14 @@
      * @return {?}
      */
     function pureProxy3(fn) {
+        var /** @type {?} */ numberOfChecks = 0;
         var /** @type {?} */ result;
-        var /** @type {?} */ v0 = UNINITIALIZED;
-        var /** @type {?} */ v1 = UNINITIALIZED;
-        var /** @type {?} */ v2 = UNINITIALIZED;
+        var /** @type {?} */ v0;
+        var /** @type {?} */ v1;
+        var /** @type {?} */ v2;
         return function (p0, p1, p2) {
-            if (!looseIdentical(v0, p0) || !looseIdentical(v1, p1) || !looseIdentical(v2, p2)) {
+            if (!numberOfChecks++ || !looseIdentical(v0, p0) || !looseIdentical(v1, p1) ||
+                !looseIdentical(v2, p2)) {
                 v0 = p0;
                 v1 = p1;
                 v2 = p2;
@@ -6727,12 +6970,13 @@
      * @return {?}
      */
     function pureProxy4(fn) {
+        var /** @type {?} */ numberOfChecks = 0;
         var /** @type {?} */ result;
         var /** @type {?} */ v0, /** @type {?} */ v1, /** @type {?} */ v2, /** @type {?} */ v3;
-        v0 = v1 = v2 = v3 = UNINITIALIZED;
+        v0 = v1 = v2 = v3;
         return function (p0, p1, p2, p3) {
-            if (!looseIdentical(v0, p0) || !looseIdentical(v1, p1) || !looseIdentical(v2, p2) ||
-                !looseIdentical(v3, p3)) {
+            if (!numberOfChecks++ || !looseIdentical(v0, p0) || !looseIdentical(v1, p1) ||
+                !looseIdentical(v2, p2) || !looseIdentical(v3, p3)) {
                 v0 = p0;
                 v1 = p1;
                 v2 = p2;
@@ -6747,12 +6991,13 @@
      * @return {?}
      */
     function pureProxy5(fn) {
+        var /** @type {?} */ numberOfChecks = 0;
         var /** @type {?} */ result;
         var /** @type {?} */ v0, /** @type {?} */ v1, /** @type {?} */ v2, /** @type {?} */ v3, /** @type {?} */ v4;
-        v0 = v1 = v2 = v3 = v4 = UNINITIALIZED;
+        v0 = v1 = v2 = v3 = v4;
         return function (p0, p1, p2, p3, p4) {
-            if (!looseIdentical(v0, p0) || !looseIdentical(v1, p1) || !looseIdentical(v2, p2) ||
-                !looseIdentical(v3, p3) || !looseIdentical(v4, p4)) {
+            if (!numberOfChecks++ || !looseIdentical(v0, p0) || !looseIdentical(v1, p1) ||
+                !looseIdentical(v2, p2) || !looseIdentical(v3, p3) || !looseIdentical(v4, p4)) {
                 v0 = p0;
                 v1 = p1;
                 v2 = p2;
@@ -6768,12 +7013,14 @@
      * @return {?}
      */
     function pureProxy6(fn) {
+        var /** @type {?} */ numberOfChecks = 0;
         var /** @type {?} */ result;
         var /** @type {?} */ v0, /** @type {?} */ v1, /** @type {?} */ v2, /** @type {?} */ v3, /** @type {?} */ v4, /** @type {?} */ v5;
-        v0 = v1 = v2 = v3 = v4 = v5 = UNINITIALIZED;
+        v0 = v1 = v2 = v3 = v4 = v5;
         return function (p0, p1, p2, p3, p4, p5) {
-            if (!looseIdentical(v0, p0) || !looseIdentical(v1, p1) || !looseIdentical(v2, p2) ||
-                !looseIdentical(v3, p3) || !looseIdentical(v4, p4) || !looseIdentical(v5, p5)) {
+            if (!numberOfChecks++ || !looseIdentical(v0, p0) || !looseIdentical(v1, p1) ||
+                !looseIdentical(v2, p2) || !looseIdentical(v3, p3) || !looseIdentical(v4, p4) ||
+                !looseIdentical(v5, p5)) {
                 v0 = p0;
                 v1 = p1;
                 v2 = p2;
@@ -6790,13 +7037,14 @@
      * @return {?}
      */
     function pureProxy7(fn) {
+        var /** @type {?} */ numberOfChecks = 0;
         var /** @type {?} */ result;
         var /** @type {?} */ v0, /** @type {?} */ v1, /** @type {?} */ v2, /** @type {?} */ v3, /** @type {?} */ v4, /** @type {?} */ v5, /** @type {?} */ v6;
-        v0 = v1 = v2 = v3 = v4 = v5 = v6 = UNINITIALIZED;
+        v0 = v1 = v2 = v3 = v4 = v5 = v6;
         return function (p0, p1, p2, p3, p4, p5, p6) {
-            if (!looseIdentical(v0, p0) || !looseIdentical(v1, p1) || !looseIdentical(v2, p2) ||
-                !looseIdentical(v3, p3) || !looseIdentical(v4, p4) || !looseIdentical(v5, p5) ||
-                !looseIdentical(v6, p6)) {
+            if (!numberOfChecks++ || !looseIdentical(v0, p0) || !looseIdentical(v1, p1) ||
+                !looseIdentical(v2, p2) || !looseIdentical(v3, p3) || !looseIdentical(v4, p4) ||
+                !looseIdentical(v5, p5) || !looseIdentical(v6, p6)) {
                 v0 = p0;
                 v1 = p1;
                 v2 = p2;
@@ -6814,13 +7062,14 @@
      * @return {?}
      */
     function pureProxy8(fn) {
+        var /** @type {?} */ numberOfChecks = 0;
         var /** @type {?} */ result;
         var /** @type {?} */ v0, /** @type {?} */ v1, /** @type {?} */ v2, /** @type {?} */ v3, /** @type {?} */ v4, /** @type {?} */ v5, /** @type {?} */ v6, /** @type {?} */ v7;
-        v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = UNINITIALIZED;
+        v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7;
         return function (p0, p1, p2, p3, p4, p5, p6, p7) {
-            if (!looseIdentical(v0, p0) || !looseIdentical(v1, p1) || !looseIdentical(v2, p2) ||
-                !looseIdentical(v3, p3) || !looseIdentical(v4, p4) || !looseIdentical(v5, p5) ||
-                !looseIdentical(v6, p6) || !looseIdentical(v7, p7)) {
+            if (!numberOfChecks++ || !looseIdentical(v0, p0) || !looseIdentical(v1, p1) ||
+                !looseIdentical(v2, p2) || !looseIdentical(v3, p3) || !looseIdentical(v4, p4) ||
+                !looseIdentical(v5, p5) || !looseIdentical(v6, p6) || !looseIdentical(v7, p7)) {
                 v0 = p0;
                 v1 = p1;
                 v2 = p2;
@@ -6839,13 +7088,15 @@
      * @return {?}
      */
     function pureProxy9(fn) {
+        var /** @type {?} */ numberOfChecks = 0;
         var /** @type {?} */ result;
         var /** @type {?} */ v0, /** @type {?} */ v1, /** @type {?} */ v2, /** @type {?} */ v3, /** @type {?} */ v4, /** @type {?} */ v5, /** @type {?} */ v6, /** @type {?} */ v7, /** @type {?} */ v8;
-        v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = v8 = UNINITIALIZED;
+        v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = v8;
         return function (p0, p1, p2, p3, p4, p5, p6, p7, p8) {
-            if (!looseIdentical(v0, p0) || !looseIdentical(v1, p1) || !looseIdentical(v2, p2) ||
-                !looseIdentical(v3, p3) || !looseIdentical(v4, p4) || !looseIdentical(v5, p5) ||
-                !looseIdentical(v6, p6) || !looseIdentical(v7, p7) || !looseIdentical(v8, p8)) {
+            if (!numberOfChecks++ || !looseIdentical(v0, p0) || !looseIdentical(v1, p1) ||
+                !looseIdentical(v2, p2) || !looseIdentical(v3, p3) || !looseIdentical(v4, p4) ||
+                !looseIdentical(v5, p5) || !looseIdentical(v6, p6) || !looseIdentical(v7, p7) ||
+                !looseIdentical(v8, p8)) {
                 v0 = p0;
                 v1 = p1;
                 v2 = p2;
@@ -6865,14 +7116,15 @@
      * @return {?}
      */
     function pureProxy10(fn) {
+        var /** @type {?} */ numberOfChecks = 0;
         var /** @type {?} */ result;
         var /** @type {?} */ v0, /** @type {?} */ v1, /** @type {?} */ v2, /** @type {?} */ v3, /** @type {?} */ v4, /** @type {?} */ v5, /** @type {?} */ v6, /** @type {?} */ v7, /** @type {?} */ v8, /** @type {?} */ v9;
-        v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = v8 = v9 = UNINITIALIZED;
+        v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = v8 = v9;
         return function (p0, p1, p2, p3, p4, p5, p6, p7, p8, p9) {
-            if (!looseIdentical(v0, p0) || !looseIdentical(v1, p1) || !looseIdentical(v2, p2) ||
-                !looseIdentical(v3, p3) || !looseIdentical(v4, p4) || !looseIdentical(v5, p5) ||
-                !looseIdentical(v6, p6) || !looseIdentical(v7, p7) || !looseIdentical(v8, p8) ||
-                !looseIdentical(v9, p9)) {
+            if (!numberOfChecks++ || !looseIdentical(v0, p0) || !looseIdentical(v1, p1) ||
+                !looseIdentical(v2, p2) || !looseIdentical(v3, p3) || !looseIdentical(v4, p4) ||
+                !looseIdentical(v5, p5) || !looseIdentical(v6, p6) || !looseIdentical(v7, p7) ||
+                !looseIdentical(v8, p8) || !looseIdentical(v9, p9)) {
                 v0 = p0;
                 v1 = p1;
                 v2 = p2;
@@ -7390,6 +7642,14 @@
         return InlineArrayDynamic;
     }());
     var /** @type {?} */ EMPTY_INLINE_ARRAY = new InlineArray0();
+    /**
+     * This is a private API only used by the compiler to read the view class.
+     * @param {?} componentFactory
+     * @return {?}
+     */
+    function getComponentFactoryViewClass(componentFactory) {
+        return componentFactory._viewClass;
+    }
 
 
     var view_utils = Object.freeze({
@@ -7399,6 +7659,12 @@
         interpolate: interpolate,
         inlineInterpolate: inlineInterpolate,
         checkBinding: checkBinding,
+        checkBindingChange: checkBindingChange,
+        checkRenderText: checkRenderText,
+        checkRenderProperty: checkRenderProperty,
+        checkRenderAttribute: checkRenderAttribute,
+        checkRenderClass: checkRenderClass,
+        checkRenderStyle: checkRenderStyle,
         castByValue: castByValue,
         EMPTY_ARRAY: EMPTY_ARRAY,
         EMPTY_MAP: EMPTY_MAP,
@@ -7423,7 +7689,8 @@
         InlineArray8: InlineArray8,
         InlineArray16: InlineArray16,
         InlineArrayDynamic: InlineArrayDynamic,
-        EMPTY_INLINE_ARRAY: EMPTY_INLINE_ARRAY
+        EMPTY_INLINE_ARRAY: EMPTY_INLINE_ARRAY,
+        getComponentFactoryViewClass: getComponentFactoryViewClass
     });
 
     /**
@@ -7444,6 +7711,7 @@
      * `ComponentRef` provides access to the Component Instance as well other objects related to this
      * Component Instance and allows you to destroy the Component Instance via the {\@link #destroy}
      * method.
+     * \@stable
      * @abstract
      */
     var ComponentRef = (function () {
@@ -7597,6 +7865,9 @@
         ComponentRef_.prototype.onDestroy = function (callback) { this.hostView.onDestroy(callback); };
         return ComponentRef_;
     }(ComponentRef));
+    /**
+     * \@stable
+     */
     var ComponentFactory = (function () {
         /**
          * @param {?} selector
@@ -7605,8 +7876,8 @@
          */
         function ComponentFactory(selector, _viewClass, _componentType) {
             this.selector = selector;
-            this._viewClass = _viewClass;
             this._componentType = _componentType;
+            this._viewClass = _viewClass;
         }
         Object.defineProperty(ComponentFactory.prototype, "componentType", {
             /**
@@ -7648,13 +7919,16 @@
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
+    /**
+     * \@stable
+     */
     var NoComponentFactoryError = (function (_super) {
         __extends$8(NoComponentFactoryError, _super);
         /**
          * @param {?} component
          */
         function NoComponentFactoryError(component) {
-            _super.call(this, "No component factory found for " + stringify(component));
+            _super.call(this, "No component factory found for " + stringify(component) + ". Did you add it to @NgModule.entryComponents?");
             this.component = component;
         }
         return NoComponentFactoryError;
@@ -7672,6 +7946,7 @@
         return _NullComponentFactoryResolver;
     }());
     /**
+     * \@stable
      * @abstract
      */
     var ComponentFactoryResolver = (function () {
@@ -7842,6 +8117,7 @@
      * The Testability service provides testing hooks that can be accessed from
      * the browser and by services such as Protractor. Each bootstrapped Angular
      * application on the page will have an instance of Testability.
+     * \@experimental
      */
     var Testability = (function () {
         /**
@@ -7865,6 +8141,7 @@
             this._watchAngularEvents();
         }
         /**
+         * \@internal
          * @return {?}
          */
         Testability.prototype._watchAngularEvents = function () {
@@ -7913,6 +8190,7 @@
             return this._isZoneStable && this._pendingCount == 0 && !this._ngZone.hasPendingMacrotasks;
         };
         /**
+         * \@internal
          * @return {?}
          */
         Testability.prototype._runCallbacksIfReady = function () {
@@ -7975,6 +8253,7 @@
     }());
     /**
      * A global registry of {\@link Testability} instances for specific elements.
+     * \@experimental
      */
     var TestabilityRegistry = (function () {
         function TestabilityRegistry() {
@@ -8040,6 +8319,7 @@
     }());
     /**
      * Set the {\@link GetTestability} implementation used by the Angular testing framework.
+     * \@experimental
      * @param {?} getter
      * @return {?}
      */
@@ -8071,6 +8351,7 @@
      * does not result in additional changes to any bindings (also known as
      * unidirectional data flow).
      *
+     * \@stable
      * @return {?}
      */
     function enableProdMode() {
@@ -8085,6 +8366,7 @@
      *
      * By default, this is true, unless a user calls `enableProdMode` before calling this.
      *
+     * \@experimental APIs related to application bootstrap are currently under review.
      * @return {?}
      */
     function isDevMode() {
@@ -8094,6 +8376,7 @@
     /**
      * A token for third-party components that can register themselves with NgProbe.
      *
+     * \@experimental
      */
     var NgProbeToken = (function () {
         /**
@@ -8110,6 +8393,7 @@
      * Creates a platform.
      * Platforms have to be eagerly created via this function.
      *
+     * \@experimental APIs related to application bootstrap are currently under review.
      * @param {?} injector
      * @return {?}
      */
@@ -8126,19 +8410,20 @@
     /**
      * Creates a factory for a platform
      *
-     * @param {?} parentPlaformFactory
+     * \@experimental APIs related to application bootstrap are currently under review.
+     * @param {?} parentPlatformFactory
      * @param {?} name
      * @param {?=} providers
      * @return {?}
      */
-    function createPlatformFactory(parentPlaformFactory, name, providers) {
+    function createPlatformFactory(parentPlatformFactory, name, providers) {
         if (providers === void 0) { providers = []; }
         var /** @type {?} */ marker = new OpaqueToken("Platform: " + name);
         return function (extraProviders) {
             if (extraProviders === void 0) { extraProviders = []; }
             if (!getPlatform()) {
-                if (parentPlaformFactory) {
-                    parentPlaformFactory(providers.concat(extraProviders).concat({ provide: marker, useValue: true }));
+                if (parentPlatformFactory) {
+                    parentPlatformFactory(providers.concat(extraProviders).concat({ provide: marker, useValue: true }));
                 }
                 else {
                     createPlatform(ReflectiveInjector.resolveAndCreate(providers.concat(extraProviders).concat({ provide: marker, useValue: true })));
@@ -8151,6 +8436,7 @@
      * Checks that there currently is a platform
      * which contains the given token as a provider.
      *
+     * \@experimental APIs related to application bootstrap are currently under review.
      * @param {?} requiredToken
      * @return {?}
      */
@@ -8167,6 +8453,7 @@
     /**
      * Destroy the existing platform.
      *
+     * \@experimental APIs related to application bootstrap are currently under review.
      * @return {?}
      */
     function destroyPlatform() {
@@ -8177,6 +8464,7 @@
     /**
      * Returns the current platform.
      *
+     * \@experimental APIs related to application bootstrap are currently under review.
      * @return {?}
      */
     function getPlatform() {
@@ -8190,6 +8478,7 @@
      * A page's platform is initialized implicitly when {\@link bootstrap}() is called, or
      * explicitly by calling {\@link createPlatform}().
      *
+     * \@stable
      * @abstract
      */
     var PlatformRef = (function () {
@@ -8204,6 +8493,7 @@
          * ```typescript
          * my_module.ts:
          *
+         * \@NgModule({
          *   imports: [BrowserModule]
          * })
          * class MyModule {}
@@ -8215,6 +8505,7 @@
          * let moduleRef = platformBrowser().bootstrapModuleFactory(MyModuleNgFactory);
          * ```
          *
+         * \@experimental APIs related to application bootstrap are currently under review.
          * @param {?} moduleFactory
          * @return {?}
          */
@@ -8227,12 +8518,14 @@
          * ## Simple Example
          *
          * ```typescript
+         * \@NgModule({
          *   imports: [BrowserModule]
          * })
          * class MyModule {}
          *
          * let moduleRef = platformBrowser().bootstrapModule(MyModule);
          * ```
+         * \@stable
          * @param {?} moduleType
          * @param {?=} compilerOptions
          * @return {?}
@@ -8448,6 +8741,7 @@
      *
      * For more about Angular applications, see the documentation for {\@link bootstrap}.
      *
+     * \@stable
      * @abstract
      */
     var ApplicationRef = (function () {
@@ -8604,7 +8898,7 @@
             }
             this._loadComponent(compRef);
             if (isDevMode()) {
-                this._console.log("Angular 2 is running in the development mode. Call enableProdMode() to enable the production mode.");
+                this._console.log("Angular is running in the development mode. Call enableProdMode() to enable the production mode.");
             }
             return compRef;
         };
@@ -8717,6 +9011,7 @@
      * `NgModuleRef` provides access to the NgModule Instance as well other objects related to this
      * NgModule Instance.
      *
+     * \@stable
      * @abstract
      */
     var NgModuleRef = (function () {
@@ -8765,6 +9060,9 @@
         NgModuleRef.prototype.onDestroy = function (callback) { };
         return NgModuleRef;
     }());
+    /**
+     * \@experimental
+     */
     var NgModuleFactory = (function () {
         /**
          * @param {?} _injectorClass
@@ -8892,6 +9190,7 @@
      */
     /**
      * Used to load ng module factories.
+     * \@stable
      * @abstract
      */
     var NgModuleFactoryLoader = (function () {
@@ -8908,6 +9207,7 @@
     var /** @type {?} */ moduleFactories = new Map();
     /**
      * Registers a loaded module. Should only be called from generated NgModuleFactory code.
+     * \@experimental
      * @param {?} id
      * @param {?} factory
      * @return {?}
@@ -8923,6 +9223,7 @@
      * Returns the NgModuleFactory with the given id, if it exists and has been loaded.
      * Factories for modules that do not specify an `id` cannot be retrieved. Throws if the module
      * cannot be found.
+     * \@experimental
      * @param {?} id
      * @return {?}
      */
@@ -8949,10 +9250,12 @@
      *
      * ### Example ([live demo](http://plnkr.co/edit/RX8sJnQYl9FWuSCWme5z?p=preview))
      * ```typescript
+     * \@Component({...})
      * class Container {
      *   \@ViewChildren(Item) items:QueryList<Item>;
      * }
      * ```
+     * \@stable
      */
     var QueryList = (function () {
         function QueryList() {
@@ -9088,6 +9391,7 @@
      * Configuration for SystemJsNgModuleLoader.
      * token.
      *
+     * \@experimental
      * @abstract
      */
     var SystemJsNgModuleLoaderConfig = (function () {
@@ -9101,6 +9405,7 @@
     };
     /**
      * NgModuleFactoryLoader that uses SystemJS to load NgModuleFactory
+     * \@experimental
      */
     var SystemJsNgModuleLoader = (function () {
         /**
@@ -9195,6 +9500,7 @@
      * To instantiate Embedded Views based on a Template, use
      * {\@link ViewContainerRef#createEmbeddedView}, which will create the View and attach it to the
      * View Container.
+     * \@stable
      * @abstract
      */
     var TemplateRef = (function () {
@@ -9265,6 +9571,7 @@
      *
      * To access a `ViewContainerRef` of an Element, you can either place a {\@link Directive} injected
      * with `ViewContainerRef` on the Element, or you obtain it via a {\@link ViewChild} query.
+     * \@stable
      * @abstract
      */
     var ViewContainerRef = (function () {
@@ -9572,6 +9879,7 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
+     * \@stable
      * @abstract
      */
     var ViewRef = (function (_super) {
@@ -9653,6 +9961,7 @@
      * </ul>
      * <!-- /ViewRef: outer-0 -->
      * ```
+     * \@experimental
      * @abstract
      */
     var EmbeddedViewRef = (function (_super) {
@@ -9789,6 +10098,9 @@
         ;
         return EventListener;
     }());
+    /**
+     * \@experimental All debugging apis are currently experimental.
+     */
     var DebugNode = (function () {
         /**
          * @param {?} nativeNode
@@ -9858,6 +10170,9 @@
         });
         return DebugNode;
     }());
+    /**
+     * \@experimental All debugging apis are currently experimental.
+     */
     var DebugElement = (function (_super) {
         __extends$12(DebugElement, _super);
         /**
@@ -9966,6 +10281,7 @@
         return DebugElement;
     }(DebugNode));
     /**
+     * \@experimental
      * @param {?} debugEls
      * @return {?}
      */
@@ -10009,6 +10325,7 @@
     // Need to keep the nodes in a global Map so that multiple angular apps are supported.
     var /** @type {?} */ _nativeNodeToDebugNode = new Map();
     /**
+     * \@experimental
      * @param {?} nativeNode
      * @return {?}
      */
@@ -10077,9 +10394,17 @@
         return defaultKeyValueDiffers;
     }
     /**
+     * @param {?=} locale
+     * @return {?}
+     */
+    function _localeFactory(locale) {
+        return locale || 'en-US';
+    }
+    /**
      * This module includes the providers of \@angular/core that are needed
      * to bootstrap components via `ApplicationRef`.
      *
+     * \@experimental
      */
     var ApplicationModule = (function () {
         function ApplicationModule() {
@@ -10096,7 +10421,11 @@
                             AnimationQueue,
                             { provide: IterableDiffers, useFactory: _iterableDiffersFactory },
                             { provide: KeyValueDiffers, useFactory: _keyValueDiffersFactory },
-                            { provide: LOCALE_ID, useValue: 'en-US' },
+                            {
+                                provide: LOCALE_ID,
+                                useFactory: _localeFactory,
+                                deps: [[new Inject(LOCALE_ID), new Optional(), new SkipSelf()]]
+                            },
                         ]
                     },] },
         ];
@@ -10271,6 +10600,7 @@
     }());
 
     /**
+     * \@experimental Animation support is experimental.
      * @abstract
      */
     var AnimationPlayer = (function () {
@@ -10364,6 +10694,7 @@
             scheduleMicroTask(function () { return _this._onFinish(); });
         }
         /**
+         * \@internal
          * @return {?}
          */
         NoOpAnimationPlayer.prototype._onFinish = function () {
@@ -10595,6 +10926,7 @@
      * Instances of this class are provided via the animation DSL when the {\@link trigger trigger
      * animation function} is called.
      *
+     * \@experimental Animation support is experimental.
      */
     var AnimationEntryMetadata = (function () {
         /**
@@ -10608,6 +10940,7 @@
         return AnimationEntryMetadata;
     }());
     /**
+     * \@experimental Animation support is experimental.
      * @abstract
      */
     var AnimationStateMetadata = (function () {
@@ -10620,6 +10953,7 @@
      * Instances of this class are provided via the animation DSL when the {\@link state state animation
      * function} is called.
      *
+     * \@experimental Animation support is experimental.
      */
     var AnimationStateDeclarationMetadata = (function (_super) {
         __extends$13(AnimationStateDeclarationMetadata, _super);
@@ -10639,6 +10973,7 @@
      * Instances of this class are provided via the animation DSL when the
      * {\@link transition transition animation function} is called.
      *
+     * \@experimental Animation support is experimental.
      */
     var AnimationStateTransitionMetadata = (function (_super) {
         __extends$13(AnimationStateTransitionMetadata, _super);
@@ -10654,6 +10989,7 @@
         return AnimationStateTransitionMetadata;
     }(AnimationStateMetadata));
     /**
+     * \@experimental Animation support is experimental.
      * @abstract
      */
     var AnimationMetadata = (function () {
@@ -10666,6 +11002,7 @@
      * Instances of this class are provided via the animation DSL when the {\@link keyframes keyframes
      * animation function} is called.
      *
+     * \@experimental Animation support is experimental.
      */
     var AnimationKeyframesSequenceMetadata = (function (_super) {
         __extends$13(AnimationKeyframesSequenceMetadata, _super);
@@ -10683,6 +11020,7 @@
      * Instances of this class are provided via the animation DSL when the {\@link style style animation
      * function} is called.
      *
+     * \@experimental Animation support is experimental.
      */
     var AnimationStyleMetadata = (function (_super) {
         __extends$13(AnimationStyleMetadata, _super);
@@ -10703,6 +11041,7 @@
      * Instances of this class are provided via the animation DSL when the {\@link animate animate
      * animation function} is called.
      *
+     * \@experimental Animation support is experimental.
      */
     var AnimationAnimateMetadata = (function (_super) {
         __extends$13(AnimationAnimateMetadata, _super);
@@ -10718,6 +11057,7 @@
         return AnimationAnimateMetadata;
     }(AnimationMetadata));
     /**
+     * \@experimental Animation support is experimental.
      * @abstract
      */
     var AnimationWithStepsMetadata = (function (_super) {
@@ -10740,6 +11080,7 @@
      * Instances of this class are provided via the animation DSL when the {\@link sequence sequence
      * animation function} is called.
      *
+     * \@experimental Animation support is experimental.
      */
     var AnimationSequenceMetadata = (function (_super) {
         __extends$13(AnimationSequenceMetadata, _super);
@@ -10765,6 +11106,7 @@
      * Instances of this class are provided via the animation DSL when the {\@link group group animation
      * function} is called.
      *
+     * \@experimental Animation support is experimental.
      */
     var AnimationGroupMetadata = (function (_super) {
         __extends$13(AnimationGroupMetadata, _super);
@@ -10835,6 +11177,7 @@
      *
      * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
      *
+     * \@experimental Animation support is experimental.
      * @param {?} timing
      * @param {?=} styles
      * @return {?}
@@ -10884,6 +11227,7 @@
      *
      * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
      *
+     * \@experimental Animation support is experimental.
      * @param {?} steps
      * @return {?}
      */
@@ -10927,6 +11271,7 @@
      *
      * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
      *
+     * \@experimental Animation support is experimental.
      * @param {?} steps
      * @return {?}
      */
@@ -10978,6 +11323,7 @@
      *
      * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
      *
+     * \@experimental Animation support is experimental.
      * @param {?} tokens
      * @return {?}
      */
@@ -11055,6 +11401,7 @@
      *
      * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
      *
+     * \@experimental Animation support is experimental.
      * @param {?} stateNameExpr
      * @param {?} styles
      * @return {?}
@@ -11109,6 +11456,7 @@
      *
      * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
      *
+     * \@experimental Animation support is experimental.
      * @param {?} steps
      * @return {?}
      */
@@ -11127,6 +11475,10 @@
      * `stateChangeExpr` value is satisfied. The `stateChangeExpr` consists of a `state1 => state2`
      * which consists
      * of two known states (use an asterix (`*`) to refer to a dynamic starting and/or ending state).
+     *
+     * A function can also be provided as the `stateChangeExpr` argument for a transition and this
+     * function will be executed each time a state change occurs. If the value returned within the
+     * function is true then the associated animation will be run.
      *
      * Animation transitions are placed within an {\@link trigger animation trigger}. For an transition
      * to animate to
@@ -11168,6 +11520,12 @@
      *
      *   // this will capture a state change between any states
      *   transition("* => *", animate("1s 0s")),
+     *
+     *   // you can also go full out and include a function
+     *   transition((fromState, toState) => {
+     *     // when `true` then it will allow the animation below to be invoked
+     *     return fromState == "off" && toState == "on";
+     *   }, animate("1s 0s"))
      * ])
      * ```
      *
@@ -11217,6 +11575,7 @@
      *
      * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
      *
+     * \@experimental Animation support is experimental.
      * @param {?} stateChangeExpr
      * @param {?} steps
      * @return {?}
@@ -11250,6 +11609,7 @@
      * declarations.
      *
      * ```typescript
+     * \@Component({
      *   selector: 'my-component',
      *   templateUrl: 'my-component-tpl.html',
      *   animations: [
@@ -11278,6 +11638,7 @@
      *
      * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
      *
+     * \@experimental Animation support is experimental.
      * @param {?} name
      * @param {?} animation
      * @return {?}
@@ -11410,7 +11771,7 @@
     }
 
     /**
-     * @license undefined
+     * @license
      * Copyright Google Inc. All Rights Reserved.
      *
      * Use of this source code is governed by an MIT-style license that can be
@@ -11431,6 +11792,7 @@
      * callback is captured for an animation either during the start or done phase.
      *
      * ```typescript
+     * \@Component({
      *   host: {
      *     '[\@myAnimationTrigger]': 'someExpression',
      *     '(\@myAnimationTrigger.start)': 'captureStartEvent($event)',
@@ -11454,17 +11816,20 @@
      * }
      * ```
      *
+     * \@experimental Animation support is experimental.
      */
     var AnimationTransitionEvent = (function () {
         /**
          * @param {?} __0
          */
         function AnimationTransitionEvent(_a) {
-            var fromState = _a.fromState, toState = _a.toState, totalTime = _a.totalTime, phaseName = _a.phaseName;
+            var fromState = _a.fromState, toState = _a.toState, totalTime = _a.totalTime, phaseName = _a.phaseName, element = _a.element, triggerName = _a.triggerName;
             this.fromState = fromState;
             this.toState = toState;
             this.totalTime = totalTime;
             this.phaseName = phaseName;
+            this.element = new ElementRef(element);
+            this.triggerName = triggerName;
         }
         return AnimationTransitionEvent;
     }());
@@ -11472,12 +11837,16 @@
     var AnimationTransition = (function () {
         /**
          * @param {?} _player
+         * @param {?} _element
+         * @param {?} _triggerName
          * @param {?} _fromState
          * @param {?} _toState
          * @param {?} _totalTime
          */
-        function AnimationTransition(_player, _fromState, _toState, _totalTime) {
+        function AnimationTransition(_player, _element, _triggerName, _fromState, _toState, _totalTime) {
             this._player = _player;
+            this._element = _element;
+            this._triggerName = _triggerName;
             this._fromState = _fromState;
             this._toState = _toState;
             this._totalTime = _totalTime;
@@ -11491,7 +11860,9 @@
                 fromState: this._fromState,
                 toState: this._toState,
                 totalTime: this._totalTime,
-                phaseName: phaseName
+                phaseName: phaseName,
+                element: this._element,
+                triggerName: this._triggerName
             });
         };
         /**
@@ -12104,7 +12475,7 @@
     /**
      * @experimental
      */
-    var /** @type {?} */ EMPTY_CONTEXT$1 = new Object();
+    var /** @type {?} */ EMPTY_CONTEXT = new Object();
     var /** @type {?} */ UNDEFINED$1 = new Object();
     /**
      * Cost of making objects: http://jsperf.com/instantiate-size-of-object
@@ -12135,6 +12506,7 @@
             this.cdMode = cdMode;
             this.declaredViewContainer = declaredViewContainer;
             this.numberOfChecks = 0;
+            this.throwOnChange = false;
             this.ref = new ViewRef_(this, viewUtils.animationQueue);
             if (type === ViewType.COMPONENT || type === ViewType.HOST) {
                 this.renderer = viewUtils.renderComponent(componentType);
@@ -12180,7 +12552,7 @@
          * @return {?}
          */
         AppView.prototype.createHostView = function (rootSelectorOrNode, hostInjector, projectableNodes) {
-            this.context = (EMPTY_CONTEXT$1);
+            this.context = (EMPTY_CONTEXT);
             this._hasExternalHostElement = isPresent(rootSelectorOrNode);
             this._hostInjector = hostInjector;
             this._hostProjectableNodes = projectableNodes;
@@ -12501,7 +12873,8 @@
             if (this.cdMode === ChangeDetectorStatus.Destroyed) {
                 this.throwDestroyedError('detectChanges');
             }
-            this.detectChangesInternal(throwOnChange);
+            this.throwOnChange = throwOnChange;
+            this.detectChangesInternal();
             if (this.cdMode === ChangeDetectorStatus.CheckOnce)
                 this.cdMode = ChangeDetectorStatus.Checked;
             this.numberOfChecks++;
@@ -12509,10 +12882,9 @@
         };
         /**
          * Overwritten by implementations
-         * @param {?} throwOnChange
          * @return {?}
          */
-        AppView.prototype.detectChangesInternal = function (throwOnChange) { };
+        AppView.prototype.detectChangesInternal = function () { };
         /**
          * @return {?}
          */
@@ -12896,7 +13268,6 @@
         DebugContext: DebugContext,
         StaticNodeDebugInfo: StaticNodeDebugInfo,
         devModeEqual: devModeEqual,
-        UNINITIALIZED: UNINITIALIZED,
         ValueUnwrapper: ValueUnwrapper,
         RenderDebugInfo: RenderDebugInfo,
         TemplateRef_: TemplateRef_,
@@ -13033,10 +13404,8 @@
     exports.ViewRef = ViewRef;
     exports.ChangeDetectionStrategy = ChangeDetectionStrategy;
     exports.ChangeDetectorRef = ChangeDetectorRef;
-    exports.CollectionChangeRecord = CollectionChangeRecord;
     exports.DefaultIterableDiffer = DefaultIterableDiffer;
     exports.IterableDiffers = IterableDiffers;
-    exports.KeyValueChangeRecord = KeyValueChangeRecord;
     exports.KeyValueDiffers = KeyValueDiffers;
     exports.SimpleChange = SimpleChange;
     exports.WrappedValue = WrappedValue;

@@ -25,6 +25,7 @@ function ElementRef_tsickle_Closure_declarations() {
      *    web worker.
      *   </p>
      * </div>
+     * \@stable
      * @type {?}
      */
     ElementRef.prototype.nativeElement;

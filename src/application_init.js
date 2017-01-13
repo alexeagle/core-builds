@@ -15,6 +15,7 @@ export const /** @type {?} */ APP_INITIALIZER = new OpaqueToken('Application Ini
 /**
  * A class that reflects the state of running {\@link APP_INITIALIZER}s.
  *
+ * \@experimental
  */
 export class ApplicationInitStatus {
     /**

@@ -1,4 +1,5 @@
 /**
+ * \@stable
  * @abstract
  */
 export class ChangeDetectorRef {
@@ -10,6 +11,7 @@ export class ChangeDetectorRef {
      * ### Example ([live demo](http://plnkr.co/edit/GC512b?p=preview))
      *
      * ```typescript
+     * \@Component({
      *   selector: 'cmp',
      *   changeDetection: ChangeDetectionStrategy.OnPush,
      *   template: `Number of ticks: {{numberOfTicks}}`
@@ -26,6 +28,7 @@ export class ChangeDetectorRef {
      *   }
      * }
      *
+     * \@Component({
      *   selector: 'app',
      *   changeDetection: ChangeDetectionStrategy.OnPush,
      *   template: `
@@ -66,6 +69,7 @@ export class ChangeDetectorRef {
      *   }
      * }
      *
+     * \@Component({
      *   selector: 'giant-list',
      *   template: `
      *     <li *ngFor="let d of dataProvider.data">Data {{d}}</lig>
@@ -80,6 +84,7 @@ export class ChangeDetectorRef {
      *   }
      * }
      *
+     * \@Component({
      *   selector: 'app',
      *   providers: [DataProvider],
      *   template: `
@@ -152,6 +157,7 @@ export class ChangeDetectorRef {
      *   }
      * }
      *
+     * \@Component({
      *   selector: 'live-data',
      *   inputs: ['live'],
      *   template: 'Data: {{dataProvider.data}}'
@@ -167,6 +173,7 @@ export class ChangeDetectorRef {
      *   }
      * }
      *
+     * \@Component({
      *   selector: 'app',
      *   providers: [DataProvider],
      *   template: `

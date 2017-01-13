@@ -24,6 +24,7 @@ import { EventEmitter } from '../facade/async';
  * import {Component, NgZone} from '\@angular/core';
  * import {NgIf} from '\@angular/common';
  *
+ * \@Component({
  *   selector: 'ng-zone-demo'.
  *   template: `
  *     <h2>Demo: NgZone</h2>
@@ -73,6 +74,7 @@ import { EventEmitter } from '../facade/async';
  *   }
  * }
  * ```
+ * \@experimental
  */
 export class NgZone {
     /**

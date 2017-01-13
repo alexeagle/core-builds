@@ -144,6 +144,7 @@ function applyParams(fnOrArray, key) {
  *   }
  * });
  * ```
+ * \@stable
  * @param {?} clsDef
  * @return {?}
  */

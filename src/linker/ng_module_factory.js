@@ -15,6 +15,7 @@ import { CodegenComponentFactoryResolver, ComponentFactoryResolver } from './com
  * `NgModuleRef` provides access to the NgModule Instance as well other objects related to this
  * NgModule Instance.
  *
+ * \@stable
  * @abstract
  */
 export class NgModuleRef {
@@ -48,6 +49,9 @@ export class NgModuleRef {
      */
     onDestroy(callback) { }
 }
+/**
+ * \@experimental
+ */
 export class NgModuleFactory {
     /**
      * @param {?} _injectorClass

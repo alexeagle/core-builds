@@ -9,6 +9,7 @@ import { ChangeDetectorRef } from '../change_detection/change_detector_ref';
 import { ChangeDetectorStatus } from '../change_detection/constants';
 import { unimplemented } from '../facade/errors';
 /**
+ * \@stable
  * @abstract
  */
 export class ViewRef extends ChangeDetectorRef {
@@ -81,6 +82,7 @@ export class ViewRef extends ChangeDetectorRef {
  * </ul>
  * <!-- /ViewRef: outer-0 -->
  * ```
+ * \@experimental
  * @abstract
  */
 export class EmbeddedViewRef extends ViewRef {
@@ -163,7 +165,10 @@ export class ViewRef_ {
     destroy() { this._view.detachAndDestroy(); }
 }
 function ViewRef__tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ViewRef_.prototype._originalMode;
     /** @type {?} */
     ViewRef_.prototype._view;

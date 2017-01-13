@@ -24,10 +24,12 @@ import { getSymbolIterator } from '../facade/lang';
  *
  * ### Example ([live demo](http://plnkr.co/edit/RX8sJnQYl9FWuSCWme5z?p=preview))
  * ```typescript
+ * \@Component({...})
  * class Container {
  *   \@ViewChildren(Item) items:QueryList<Item>;
  * }
  * ```
+ * \@stable
  */
 export class QueryList {
     constructor() {

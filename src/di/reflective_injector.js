@@ -222,7 +222,10 @@ export class ReflectiveProtoInjector {
     }
 }
 function ReflectiveProtoInjector_tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ReflectiveProtoInjector.prototype._strategy;
     /** @type {?} */
     ReflectiveProtoInjector.prototype.numberOfProviders;
@@ -459,9 +462,11 @@ function ReflectiveInjectorDynamicStrategy_tsickle_Closure_declarations() {
  * The following example creates an `Injector` configured to create `Engine` and `Car`.
  *
  * ```typescript
+ * \@Injectable()
  * class Engine {
  * }
  *
+ * \@Injectable()
  * class Car {
  *   constructor(public engine:Engine) {}
  * }
@@ -475,6 +480,7 @@ function ReflectiveInjectorDynamicStrategy_tsickle_Closure_declarations() {
  * Notice, we don't use the `new` operator because we explicitly want to have the `Injector`
  * resolve all of the object's dependencies automatically.
  *
+ * \@stable
  * @abstract
  */
 export class ReflectiveInjector {
@@ -487,9 +493,11 @@ export class ReflectiveInjector {
      * ### Example ([live demo](http://plnkr.co/edit/AiXTHi?p=preview))
      *
      * ```typescript
+     * \@Injectable()
      * class Engine {
      * }
      *
+     * \@Injectable()
      * class Car {
      *   constructor(public engine:Engine) {}
      * }
@@ -523,9 +531,11 @@ export class ReflectiveInjector {
      * ### Example ([live demo](http://plnkr.co/edit/ePOccA?p=preview))
      *
      * ```typescript
+     * \@Injectable()
      * class Engine {
      * }
      *
+     * \@Injectable()
      * class Car {
      *   constructor(public engine:Engine) {}
      * }
@@ -553,9 +563,11 @@ export class ReflectiveInjector {
      * ### Example ([live demo](http://plnkr.co/edit/KrSMci?p=preview))
      *
      * ```typescript
+     * \@Injectable()
      * class Engine {
      * }
      *
+     * \@Injectable()
      * class Car {
      *   constructor(public engine:Engine) {}
      * }
@@ -564,6 +576,7 @@ export class ReflectiveInjector {
      * var injector = ReflectiveInjector.fromResolvedProviders(providers);
      * expect(injector.get(Car) instanceof Car).toBe(true);
      * ```
+     * \@experimental
      * @param {?} providers
      * @param {?=} parent
      * @return {?}
@@ -655,9 +668,11 @@ export class ReflectiveInjector {
      * ### Example ([live demo](http://plnkr.co/edit/yvVXoB?p=preview))
      *
      * ```typescript
+     * \@Injectable()
      * class Engine {
      * }
      *
+     * \@Injectable()
      * class Car {
      *   constructor(public engine:Engine) {}
      * }
@@ -680,9 +695,11 @@ export class ReflectiveInjector {
      * ### Example ([live demo](http://plnkr.co/edit/ptCImQ?p=preview))
      *
      * ```typescript
+     * \@Injectable()
      * class Engine {
      * }
      *
+     * \@Injectable()
      * class Car {
      *   constructor(public engine:Engine) {}
      * }
@@ -736,6 +753,7 @@ export class ReflectiveInjector_ {
      */
     get parent() { return this._parent; }
     /**
+     * \@internal
      * Internal. Do not use.
      * We return `any` not to export the InjectorStrategy type.
      * @return {?}
@@ -774,6 +792,7 @@ export class ReflectiveInjector_ {
         return this._instantiateProvider(provider);
     }
     /**
+     * \@internal
      * @param {?} provider
      * @return {?}
      */
@@ -958,6 +977,7 @@ export class ReflectiveInjector_ {
         }
     }
     /**
+     * \@internal
      * @param {?} key
      * @param {?} notFoundValue
      * @return {?}
@@ -971,6 +991,7 @@ export class ReflectiveInjector_ {
         }
     }
     /**
+     * \@internal
      * @param {?} key
      * @param {?} notFoundValue
      * @return {?}
@@ -980,6 +1001,7 @@ export class ReflectiveInjector_ {
         return (obj !== UNDEFINED) ? obj : this._throwOrNull(key, notFoundValue);
     }
     /**
+     * \@internal
      * @param {?} key
      * @param {?} notFoundValue
      * @param {?} lowerBoundVisibility
@@ -1023,11 +1045,20 @@ export class ReflectiveInjector_ {
 function ReflectiveInjector__tsickle_Closure_declarations() {
     /** @type {?} */
     ReflectiveInjector_.prototype._strategy;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ReflectiveInjector_.prototype._constructionCounter;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ReflectiveInjector_.prototype._proto;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ReflectiveInjector_.prototype._parent;
 }
 const /** @type {?} */ INJECTOR_KEY = ReflectiveKey.get(Injector);

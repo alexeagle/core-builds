@@ -6,8 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { AnimationQueue } from '../animation/animation_queue';
-import { devModeEqual } from '../change_detection/change_detection';
-import { UNINITIALIZED } from '../change_detection/change_detection_util';
+import { SimpleChange, devModeEqual } from '../change_detection/change_detection';
 import { Injectable } from '../di';
 import { isPresent, looseIdentical } from '../facade/lang';
 import { RenderComponentType, RootRenderer } from '../render/api';
@@ -23,10 +22,10 @@ export class ViewUtils {
     constructor(_renderer, sanitizer, animationQueue) {
         this._renderer = _renderer;
         this.animationQueue = animationQueue;
-        this._nextCompTypeId = 0;
         this.sanitizer = sanitizer;
     }
     /**
+     * \@internal
      * @param {?} renderComponentType
      * @return {?}
      */
@@ -53,8 +52,6 @@ function ViewUtils_tsickle_Closure_declarations() {
     ViewUtils.ctorParameters;
     /** @type {?} */
     ViewUtils.prototype.sanitizer;
-    /** @type {?} */
-    ViewUtils.prototype._nextCompTypeId;
     /** @type {?} */
     ViewUtils.prototype._renderer;
     /** @type {?} */
@@ -157,20 +154,120 @@ function _toStringWithNull(v) {
     return v != null ? v.toString() : '';
 }
 /**
- * @param {?} throwOnChange
+ * @param {?} view
  * @param {?} oldValue
  * @param {?} newValue
+ * @param {?} forceUpdate
  * @return {?}
  */
-export function checkBinding(throwOnChange, oldValue, newValue) {
-    if (throwOnChange) {
-        if (!devModeEqual(oldValue, newValue)) {
-            throw new ExpressionChangedAfterItHasBeenCheckedError(oldValue, newValue);
+export function checkBinding(view, oldValue, newValue, forceUpdate) {
+    const /** @type {?} */ isFirstCheck = view.numberOfChecks === 0;
+    if (view.throwOnChange) {
+        if (isFirstCheck || !devModeEqual(oldValue, newValue)) {
+            throw new ExpressionChangedAfterItHasBeenCheckedError(oldValue, newValue, isFirstCheck);
         }
         return false;
     }
     else {
-        return !looseIdentical(oldValue, newValue);
+        return isFirstCheck || forceUpdate || !looseIdentical(oldValue, newValue);
+    }
+}
+/**
+ * @param {?} view
+ * @param {?} oldValue
+ * @param {?} newValue
+ * @param {?} forceUpdate
+ * @return {?}
+ */
+export function checkBindingChange(view, oldValue, newValue, forceUpdate) {
+    if (checkBinding(view, oldValue, newValue, forceUpdate)) {
+        return new SimpleChange(oldValue, newValue, view.numberOfChecks === 0);
+    }
+}
+/**
+ * @param {?} view
+ * @param {?} renderElement
+ * @param {?} oldValue
+ * @param {?} newValue
+ * @param {?} forceUpdate
+ * @return {?}
+ */
+export function checkRenderText(view, renderElement, oldValue, newValue, forceUpdate) {
+    if (checkBinding(view, oldValue, newValue, forceUpdate)) {
+        view.renderer.setText(renderElement, newValue);
+    }
+}
+/**
+ * @param {?} view
+ * @param {?} renderElement
+ * @param {?} propName
+ * @param {?} oldValue
+ * @param {?} newValue
+ * @param {?} forceUpdate
+ * @param {?} securityContext
+ * @return {?}
+ */
+export function checkRenderProperty(view, renderElement, propName, oldValue, newValue, forceUpdate, securityContext) {
+    if (checkBinding(view, oldValue, newValue, forceUpdate)) {
+        let /** @type {?} */ renderValue = securityContext ? view.viewUtils.sanitizer.sanitize(securityContext, newValue) : newValue;
+        view.renderer.setElementProperty(renderElement, propName, renderValue);
+    }
+}
+/**
+ * @param {?} view
+ * @param {?} renderElement
+ * @param {?} attrName
+ * @param {?} oldValue
+ * @param {?} newValue
+ * @param {?} forceUpdate
+ * @param {?} securityContext
+ * @return {?}
+ */
+export function checkRenderAttribute(view, renderElement, attrName, oldValue, newValue, forceUpdate, securityContext) {
+    if (checkBinding(view, oldValue, newValue, forceUpdate)) {
+        let /** @type {?} */ renderValue = securityContext ? view.viewUtils.sanitizer.sanitize(securityContext, newValue) : newValue;
+        renderValue = renderValue != null ? renderValue.toString() : null;
+        view.renderer.setElementAttribute(renderElement, attrName, renderValue);
+    }
+}
+/**
+ * @param {?} view
+ * @param {?} renderElement
+ * @param {?} className
+ * @param {?} oldValue
+ * @param {?} newValue
+ * @param {?} forceUpdate
+ * @return {?}
+ */
+export function checkRenderClass(view, renderElement, className, oldValue, newValue, forceUpdate) {
+    if (checkBinding(view, oldValue, newValue, forceUpdate)) {
+        view.renderer.setElementClass(renderElement, className, newValue);
+    }
+}
+/**
+ * @param {?} view
+ * @param {?} renderElement
+ * @param {?} styleName
+ * @param {?} unit
+ * @param {?} oldValue
+ * @param {?} newValue
+ * @param {?} forceUpdate
+ * @param {?} securityContext
+ * @return {?}
+ */
+export function checkRenderStyle(view, renderElement, styleName, unit, oldValue, newValue, forceUpdate, securityContext) {
+    if (checkBinding(view, oldValue, newValue, forceUpdate)) {
+        let /** @type {?} */ renderValue = securityContext ? view.viewUtils.sanitizer.sanitize(securityContext, newValue) : newValue;
+        if (renderValue != null) {
+            renderValue = renderValue.toString();
+            if (unit != null) {
+                renderValue = renderValue + unit;
+            }
+        }
+        else {
+            renderValue = null;
+        }
+        view.renderer.setElementStyle(renderElement, styleName, renderValue);
     }
 }
 /**
@@ -188,10 +285,11 @@ export const /** @type {?} */ EMPTY_MAP = {};
  * @return {?}
  */
 export function pureProxy1(fn) {
+    let /** @type {?} */ numberOfChecks = 0;
     let /** @type {?} */ result;
-    let /** @type {?} */ v0 = UNINITIALIZED;
+    let /** @type {?} */ v0;
     return (p0) => {
-        if (!looseIdentical(v0, p0)) {
+        if (!numberOfChecks++ || !looseIdentical(v0, p0)) {
             v0 = p0;
             result = fn(p0);
         }
@@ -203,11 +301,12 @@ export function pureProxy1(fn) {
  * @return {?}
  */
 export function pureProxy2(fn) {
+    let /** @type {?} */ numberOfChecks = 0;
     let /** @type {?} */ result;
-    let /** @type {?} */ v0 = UNINITIALIZED;
-    let /** @type {?} */ v1 = UNINITIALIZED;
+    let /** @type {?} */ v0;
+    let /** @type {?} */ v1;
     return (p0, p1) => {
-        if (!looseIdentical(v0, p0) || !looseIdentical(v1, p1)) {
+        if (!numberOfChecks++ || !looseIdentical(v0, p0) || !looseIdentical(v1, p1)) {
             v0 = p0;
             v1 = p1;
             result = fn(p0, p1);
@@ -220,12 +319,14 @@ export function pureProxy2(fn) {
  * @return {?}
  */
 export function pureProxy3(fn) {
+    let /** @type {?} */ numberOfChecks = 0;
     let /** @type {?} */ result;
-    let /** @type {?} */ v0 = UNINITIALIZED;
-    let /** @type {?} */ v1 = UNINITIALIZED;
-    let /** @type {?} */ v2 = UNINITIALIZED;
+    let /** @type {?} */ v0;
+    let /** @type {?} */ v1;
+    let /** @type {?} */ v2;
     return (p0, p1, p2) => {
-        if (!looseIdentical(v0, p0) || !looseIdentical(v1, p1) || !looseIdentical(v2, p2)) {
+        if (!numberOfChecks++ || !looseIdentical(v0, p0) || !looseIdentical(v1, p1) ||
+            !looseIdentical(v2, p2)) {
             v0 = p0;
             v1 = p1;
             v2 = p2;
@@ -239,12 +340,13 @@ export function pureProxy3(fn) {
  * @return {?}
  */
 export function pureProxy4(fn) {
+    let /** @type {?} */ numberOfChecks = 0;
     let /** @type {?} */ result;
     let /** @type {?} */ v0, /** @type {?} */ v1, /** @type {?} */ v2, /** @type {?} */ v3;
-    v0 = v1 = v2 = v3 = UNINITIALIZED;
+    v0 = v1 = v2 = v3;
     return (p0, p1, p2, p3) => {
-        if (!looseIdentical(v0, p0) || !looseIdentical(v1, p1) || !looseIdentical(v2, p2) ||
-            !looseIdentical(v3, p3)) {
+        if (!numberOfChecks++ || !looseIdentical(v0, p0) || !looseIdentical(v1, p1) ||
+            !looseIdentical(v2, p2) || !looseIdentical(v3, p3)) {
             v0 = p0;
             v1 = p1;
             v2 = p2;
@@ -259,12 +361,13 @@ export function pureProxy4(fn) {
  * @return {?}
  */
 export function pureProxy5(fn) {
+    let /** @type {?} */ numberOfChecks = 0;
     let /** @type {?} */ result;
     let /** @type {?} */ v0, /** @type {?} */ v1, /** @type {?} */ v2, /** @type {?} */ v3, /** @type {?} */ v4;
-    v0 = v1 = v2 = v3 = v4 = UNINITIALIZED;
+    v0 = v1 = v2 = v3 = v4;
     return (p0, p1, p2, p3, p4) => {
-        if (!looseIdentical(v0, p0) || !looseIdentical(v1, p1) || !looseIdentical(v2, p2) ||
-            !looseIdentical(v3, p3) || !looseIdentical(v4, p4)) {
+        if (!numberOfChecks++ || !looseIdentical(v0, p0) || !looseIdentical(v1, p1) ||
+            !looseIdentical(v2, p2) || !looseIdentical(v3, p3) || !looseIdentical(v4, p4)) {
             v0 = p0;
             v1 = p1;
             v2 = p2;
@@ -280,12 +383,14 @@ export function pureProxy5(fn) {
  * @return {?}
  */
 export function pureProxy6(fn) {
+    let /** @type {?} */ numberOfChecks = 0;
     let /** @type {?} */ result;
     let /** @type {?} */ v0, /** @type {?} */ v1, /** @type {?} */ v2, /** @type {?} */ v3, /** @type {?} */ v4, /** @type {?} */ v5;
-    v0 = v1 = v2 = v3 = v4 = v5 = UNINITIALIZED;
+    v0 = v1 = v2 = v3 = v4 = v5;
     return (p0, p1, p2, p3, p4, p5) => {
-        if (!looseIdentical(v0, p0) || !looseIdentical(v1, p1) || !looseIdentical(v2, p2) ||
-            !looseIdentical(v3, p3) || !looseIdentical(v4, p4) || !looseIdentical(v5, p5)) {
+        if (!numberOfChecks++ || !looseIdentical(v0, p0) || !looseIdentical(v1, p1) ||
+            !looseIdentical(v2, p2) || !looseIdentical(v3, p3) || !looseIdentical(v4, p4) ||
+            !looseIdentical(v5, p5)) {
             v0 = p0;
             v1 = p1;
             v2 = p2;
@@ -302,13 +407,14 @@ export function pureProxy6(fn) {
  * @return {?}
  */
 export function pureProxy7(fn) {
+    let /** @type {?} */ numberOfChecks = 0;
     let /** @type {?} */ result;
     let /** @type {?} */ v0, /** @type {?} */ v1, /** @type {?} */ v2, /** @type {?} */ v3, /** @type {?} */ v4, /** @type {?} */ v5, /** @type {?} */ v6;
-    v0 = v1 = v2 = v3 = v4 = v5 = v6 = UNINITIALIZED;
+    v0 = v1 = v2 = v3 = v4 = v5 = v6;
     return (p0, p1, p2, p3, p4, p5, p6) => {
-        if (!looseIdentical(v0, p0) || !looseIdentical(v1, p1) || !looseIdentical(v2, p2) ||
-            !looseIdentical(v3, p3) || !looseIdentical(v4, p4) || !looseIdentical(v5, p5) ||
-            !looseIdentical(v6, p6)) {
+        if (!numberOfChecks++ || !looseIdentical(v0, p0) || !looseIdentical(v1, p1) ||
+            !looseIdentical(v2, p2) || !looseIdentical(v3, p3) || !looseIdentical(v4, p4) ||
+            !looseIdentical(v5, p5) || !looseIdentical(v6, p6)) {
             v0 = p0;
             v1 = p1;
             v2 = p2;
@@ -326,13 +432,14 @@ export function pureProxy7(fn) {
  * @return {?}
  */
 export function pureProxy8(fn) {
+    let /** @type {?} */ numberOfChecks = 0;
     let /** @type {?} */ result;
     let /** @type {?} */ v0, /** @type {?} */ v1, /** @type {?} */ v2, /** @type {?} */ v3, /** @type {?} */ v4, /** @type {?} */ v5, /** @type {?} */ v6, /** @type {?} */ v7;
-    v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = UNINITIALIZED;
+    v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7;
     return (p0, p1, p2, p3, p4, p5, p6, p7) => {
-        if (!looseIdentical(v0, p0) || !looseIdentical(v1, p1) || !looseIdentical(v2, p2) ||
-            !looseIdentical(v3, p3) || !looseIdentical(v4, p4) || !looseIdentical(v5, p5) ||
-            !looseIdentical(v6, p6) || !looseIdentical(v7, p7)) {
+        if (!numberOfChecks++ || !looseIdentical(v0, p0) || !looseIdentical(v1, p1) ||
+            !looseIdentical(v2, p2) || !looseIdentical(v3, p3) || !looseIdentical(v4, p4) ||
+            !looseIdentical(v5, p5) || !looseIdentical(v6, p6) || !looseIdentical(v7, p7)) {
             v0 = p0;
             v1 = p1;
             v2 = p2;
@@ -351,13 +458,15 @@ export function pureProxy8(fn) {
  * @return {?}
  */
 export function pureProxy9(fn) {
+    let /** @type {?} */ numberOfChecks = 0;
     let /** @type {?} */ result;
     let /** @type {?} */ v0, /** @type {?} */ v1, /** @type {?} */ v2, /** @type {?} */ v3, /** @type {?} */ v4, /** @type {?} */ v5, /** @type {?} */ v6, /** @type {?} */ v7, /** @type {?} */ v8;
-    v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = v8 = UNINITIALIZED;
+    v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = v8;
     return (p0, p1, p2, p3, p4, p5, p6, p7, p8) => {
-        if (!looseIdentical(v0, p0) || !looseIdentical(v1, p1) || !looseIdentical(v2, p2) ||
-            !looseIdentical(v3, p3) || !looseIdentical(v4, p4) || !looseIdentical(v5, p5) ||
-            !looseIdentical(v6, p6) || !looseIdentical(v7, p7) || !looseIdentical(v8, p8)) {
+        if (!numberOfChecks++ || !looseIdentical(v0, p0) || !looseIdentical(v1, p1) ||
+            !looseIdentical(v2, p2) || !looseIdentical(v3, p3) || !looseIdentical(v4, p4) ||
+            !looseIdentical(v5, p5) || !looseIdentical(v6, p6) || !looseIdentical(v7, p7) ||
+            !looseIdentical(v8, p8)) {
             v0 = p0;
             v1 = p1;
             v2 = p2;
@@ -377,14 +486,15 @@ export function pureProxy9(fn) {
  * @return {?}
  */
 export function pureProxy10(fn) {
+    let /** @type {?} */ numberOfChecks = 0;
     let /** @type {?} */ result;
     let /** @type {?} */ v0, /** @type {?} */ v1, /** @type {?} */ v2, /** @type {?} */ v3, /** @type {?} */ v4, /** @type {?} */ v5, /** @type {?} */ v6, /** @type {?} */ v7, /** @type {?} */ v8, /** @type {?} */ v9;
-    v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = v8 = v9 = UNINITIALIZED;
+    v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = v8 = v9;
     return (p0, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
-        if (!looseIdentical(v0, p0) || !looseIdentical(v1, p1) || !looseIdentical(v2, p2) ||
-            !looseIdentical(v3, p3) || !looseIdentical(v4, p4) || !looseIdentical(v5, p5) ||
-            !looseIdentical(v6, p6) || !looseIdentical(v7, p7) || !looseIdentical(v8, p8) ||
-            !looseIdentical(v9, p9)) {
+        if (!numberOfChecks++ || !looseIdentical(v0, p0) || !looseIdentical(v1, p1) ||
+            !looseIdentical(v2, p2) || !looseIdentical(v3, p3) || !looseIdentical(v4, p4) ||
+            !looseIdentical(v5, p5) || !looseIdentical(v6, p6) || !looseIdentical(v7, p7) ||
+            !looseIdentical(v8, p8) || !looseIdentical(v9, p9)) {
             v0 = p0;
             v1 = p1;
             v2 = p2;
@@ -972,4 +1082,12 @@ function InlineArrayDynamic_tsickle_Closure_declarations() {
     InlineArrayDynamic.prototype.length;
 }
 export const /** @type {?} */ EMPTY_INLINE_ARRAY = new InlineArray0();
+/**
+ * This is a private API only used by the compiler to read the view class.
+ * @param {?} componentFactory
+ * @return {?}
+ */
+export function getComponentFactoryViewClass(componentFactory) {
+    return componentFactory._viewClass;
+}
 //# sourceMappingURL=view_utils.js.map

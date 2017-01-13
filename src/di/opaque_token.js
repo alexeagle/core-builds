@@ -1,11 +1,25 @@
 /**
- * @license
- * Copyright Google Inc. All Rights Reserved.
+ * Creates a token that can be used in a DI Provider.
  *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * ### Example ([live demo](http://plnkr.co/edit/Ys9ezXpj2Mnoy3Uc8KBp?p=preview))
+ *
+ * ```typescript
+ * var t = new OpaqueToken("value");
+ *
+ * var injector = Injector.resolveAndCreate([
+ *   {provide: t, useValue: "bindingValue"}
+ * ]);
+ *
+ * expect(injector.get(t)).toEqual("bindingValue");
+ * ```
+ *
+ * Using an `OpaqueToken` is preferable to using strings as tokens because of possible collisions
+ * caused by multiple providers using the same string as two different tokens.
+ *
+ * Using an `OpaqueToken` is preferable to using an `Object` as tokens because it provides better
+ * error messages.
+ * \@stable
  */
-import { Injectable } from './metadata';
 export class OpaqueToken {
     /**
      * @param {?} _desc
@@ -18,21 +32,7 @@ export class OpaqueToken {
      */
     toString() { return `Token ${this._desc}`; }
 }
-OpaqueToken.decorators = [
-    { type: Injectable },
-];
-/** @nocollapse */
-OpaqueToken.ctorParameters = () => [
-    null,
-];
 function OpaqueToken_tsickle_Closure_declarations() {
-    /** @type {?} */
-    OpaqueToken.decorators;
-    /**
-     * @nocollapse
-     * @type {?}
-     */
-    OpaqueToken.ctorParameters;
     /** @type {?} */
     OpaqueToken.prototype._desc;
 }

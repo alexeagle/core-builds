@@ -21,6 +21,7 @@ import { resolveForwardRef } from './forward_ref';
  * `Key` should not be created directly. {\@link ReflectiveInjector} creates keys automatically when
  * resolving
  * providers.
+ * \@experimental
  */
 export class ReflectiveKey {
     /**
@@ -59,6 +60,9 @@ function ReflectiveKey_tsickle_Closure_declarations() {
     /** @type {?} */
     ReflectiveKey.prototype.id;
 }
+/**
+ * \@internal
+ */
 export class KeyRegistry {
     constructor() {
         this._allKeys = new Map();

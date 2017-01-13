@@ -14,6 +14,7 @@ import { ViewUtils } from './view_utils';
  * `ComponentRef` provides access to the Component Instance as well other objects related to this
  * Component Instance and allows you to destroy the Component Instance via the {\@link #destroy}
  * method.
+ * \@stable
  * @abstract
  */
 export class ComponentRef {
@@ -125,9 +126,8 @@ function ComponentRef__tsickle_Closure_declarations() {
     ComponentRef_.prototype._component;
 }
 /**
- * @experimental
+ * \@stable
  */
-const /** @type {?} */ EMPTY_CONTEXT = new Object();
 export class ComponentFactory {
     /**
      * @param {?} selector
@@ -136,8 +136,8 @@ export class ComponentFactory {
      */
     constructor(selector, _viewClass, _componentType) {
         this.selector = selector;
-        this._viewClass = _viewClass;
         this._componentType = _componentType;
+        this._viewClass = _viewClass;
     }
     /**
      * @return {?}
@@ -160,10 +160,13 @@ export class ComponentFactory {
     }
 }
 function ComponentFactory_tsickle_Closure_declarations() {
+    /**
+     * \@internal
+     * @type {?}
+     */
+    ComponentFactory.prototype._viewClass;
     /** @type {?} */
     ComponentFactory.prototype.selector;
-    /** @type {?} */
-    ComponentFactory.prototype._viewClass;
     /** @type {?} */
     ComponentFactory.prototype._componentType;
 }

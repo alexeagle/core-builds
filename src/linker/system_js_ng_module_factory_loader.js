@@ -13,6 +13,7 @@ const /** @type {?} */ FACTORY_CLASS_SUFFIX = 'NgFactory';
  * Configuration for SystemJsNgModuleLoader.
  * token.
  *
+ * \@experimental
  * @abstract
  */
 export class SystemJsNgModuleLoaderConfig {
@@ -35,6 +36,7 @@ const /** @type {?} */ DEFAULT_CONFIG = {
 };
 /**
  * NgModuleFactoryLoader that uses SystemJS to load NgModuleFactory
+ * \@experimental
  */
 export class SystemJsNgModuleLoader {
     /**

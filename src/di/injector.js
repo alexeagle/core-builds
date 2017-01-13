@@ -23,11 +23,14 @@ class _NullInjector {
     }
 }
 /**
+ * \@whatItDoes Injector interface
+ * \@howToUse
  * ```
  * const injector: Injector = ...;
  * injector.get(...);
  * ```
  *
+ * \@description
  * For more details, see the {\@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
  *
  * ### Example
@@ -37,6 +40,7 @@ class _NullInjector {
  * `Injector` returns itself when given `Injector` as a token:
  * {\@example core/di/ts/injector_spec.ts region='injectInjector'}
  *
+ * \@stable
  * @abstract
  */
 export class Injector {

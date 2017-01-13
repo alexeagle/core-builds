@@ -36,6 +36,7 @@ function constructResolvingPath(keys) {
 }
 /**
  * Base class for all errors arising from misconfigured providers.
+ * \@stable
  */
 export class AbstractProviderError extends BaseError {
     /**
@@ -62,13 +63,25 @@ export class AbstractProviderError extends BaseError {
     }
 }
 function AbstractProviderError_tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     AbstractProviderError.prototype.message;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     AbstractProviderError.prototype.keys;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     AbstractProviderError.prototype.injectors;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     AbstractProviderError.prototype.constructResolvingMessage;
 }
 /**
@@ -84,6 +97,7 @@ function AbstractProviderError_tsickle_Closure_declarations() {
  *
  * expect(() => Injector.resolveAndCreate([A])).toThrowError();
  * ```
+ * \@stable
  */
 export class NoProviderError extends AbstractProviderError {
     /**
@@ -112,6 +126,7 @@ export class NoProviderError extends AbstractProviderError {
  * ```
  *
  * Retrieving `A` or `B` throws a `CyclicDependencyError` as the graph above cannot be constructed.
+ * \@stable
  */
 export class CyclicDependencyError extends AbstractProviderError {
     /**
@@ -148,6 +163,7 @@ export class CyclicDependencyError extends AbstractProviderError {
  *   expect(e.originalStack).toBeDefined();
  * }
  * ```
+ * \@stable
  */
 export class InstantiationError extends WrappedError {
     /**
@@ -183,9 +199,15 @@ export class InstantiationError extends WrappedError {
     get causeKey() { return this.keys[0]; }
 }
 function InstantiationError_tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     InstantiationError.prototype.keys;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     InstantiationError.prototype.injectors;
 }
 /**
@@ -197,6 +219,7 @@ function InstantiationError_tsickle_Closure_declarations() {
  * ```typescript
  * expect(() => Injector.resolveAndCreate(["not a type"])).toThrowError();
  * ```
+ * \@stable
  */
 export class InvalidProviderError extends BaseError {
     /**
@@ -233,6 +256,7 @@ export class InvalidProviderError extends BaseError {
  *
  * expect(() => Injector.resolveAndCreate([A,B])).toThrowError();
  * ```
+ * \@stable
  */
 export class NoAnnotationError extends BaseError {
     /**
@@ -276,6 +300,7 @@ export class NoAnnotationError extends BaseError {
  *
  * expect(() => injector.getAt(100)).toThrowError();
  * ```
+ * \@stable
  */
 export class OutOfBoundsError extends BaseError {
     /**
